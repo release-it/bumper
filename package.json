@@ -1,0 +1,47 @@
+{
+  "name": "@release-it/bumper",
+  "version": "0.0.0",
+  "description": "Version read/write plugin for release-it",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava test.js --verbose",
+    "release": "release-it"
+  },
+  "keywords": [
+    "release",
+    "release-it",
+    "release-it-plugin",
+    "version",
+    "bump",
+    "manifest"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/release-it/bumper.git"
+  },
+  "homepage": "https://github.com/release-it/bumper#readme",
+  "bugs": "https://github.com/release-it/bumper/issues",
+  "author": {
+    "email": "lars@webpro.nl",
+    "name": "Lars Kappert"
+  },
+  "dependencies": {
+    "lodash.castarray": "^4.4.0",
+    "lodash.get": "^4.4.2",
+    "mock-fs": "^4.9.0",
+    "release-it": "^11.0.1"
+  },
+  "devDependencies": {
+    "ava": "^1.4.1",
+    "sinon": "^7.3.2"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "release-it": {
+    "scripts": {
+      "beforeStart": "npm test"
+    }
+  }
+}
