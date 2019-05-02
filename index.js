@@ -32,7 +32,7 @@ class Bumper extends Plugin {
     return version;
   }
 
-  bump({ version }) {
+  bump(version) {
     const { out } = this.options;
     if (!out) return;
     return Promise.all(

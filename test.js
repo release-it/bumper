@@ -35,20 +35,20 @@ test('should return latest version from plain text file', async t => {
 test('should write JSON file', async t => {
   const options = { [namespace]: { out: './manifest.json' } };
   const plugin = factory(Plugin, { namespace, options });
-  await plugin.bump({ version: '1.2.3' });
+  await plugin.bump('1.2.3');
   t.is(fs.readFileSync('./manifest.json').toString(), '{"version":"1.2.3"}');
 });
 
 test('should write new JSON file', async t => {
   const options = { [namespace]: { out: ['./null.json'] } };
   const plugin = factory(Plugin, { namespace, options });
-  await plugin.bump({ version: '0.0.0' });
+  await plugin.bump('0.0.0');
   t.is(fs.readFileSync('./null.json').toString(), '{"version":"0.0.0"}');
 });
 
 test('should write plain text file', async t => {
   const options = { [namespace]: { out: [{ file: './VERSION', type: 'text/plain' }] } };
   const plugin = factory(Plugin, { namespace, options });
-  await plugin.bump({ version: '3.2.1' });
+  await plugin.bump('3.2.1');
   t.is(fs.readFileSync('./VERSION').toString(), '3.2.1');
 });
