@@ -1,6 +1,7 @@
+const fs = require('fs');
+const { EOL } = require('os');
 const test = require('ava');
 const mock = require('mock-fs');
-const fs = require('fs');
 const { factory, runTasks } = require('release-it/test/util');
 const Plugin = require('.');
 
@@ -32,18 +33,18 @@ test('should return latest version from plain text file', async t => {
   t.is(version, '2.0.0');
 });
 
-test('should write JSON file', async t => {
+test('should write indented JSON file', async t => {
   const options = { [namespace]: { out: './manifest.json' } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('1.2.3');
-  t.is(fs.readFileSync('./manifest.json').toString(), '{"version":"1.2.3"}');
+  t.is(fs.readFileSync('./manifest.json').toString(), `{${EOL}  "version": "1.2.3"${EOL}}${EOL}`);
 });
 
-test('should write new JSON file', async t => {
+test('should write new, indented JSON file', async t => {
   const options = { [namespace]: { out: ['./null.json'] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('0.0.0');
-  t.is(fs.readFileSync('./null.json').toString(), '{"version":"0.0.0"}');
+  t.is(fs.readFileSync('./null.json').toString(), `{${EOL}  "version": "0.0.0"${EOL}}${EOL}`);
 });
 
 test('should write plain text file', async t => {
