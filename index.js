@@ -16,6 +16,15 @@ const parseFileOption = option => {
 };
 
 class Bumper extends Plugin {
+
+  getIncrementedVersionCI() {
+
+  }
+
+  static disablePlugin() {
+    return "version"  
+  }
+
   async getLatestVersion() {
     const { in: _in } = this.options;
     if (!_in) return;
