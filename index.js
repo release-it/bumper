@@ -1,6 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 const get = require('lodash.get');
+const set = require('lodash.set');
 const castArray = require('lodash.castarray');
 const detectIndent = require('detect-indent');
 const { Plugin } = require('release-it');
@@ -43,7 +44,7 @@ class Bumper extends Plugin {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';
           const parsed = JSON.parse(data);
-          parsed[path] = version;
+          set(parsed, path, version);
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
         } else if (type === 'text/plain') {
           return writeFile(file, version);

@@ -40,3 +40,14 @@ The `out` option can also be an array of files:
   }
 }
 ```
+
+The `path` option (default: `"version"`) can be used to change a different property. the following example will set the
+`deeper.current` property to the new version in `manifest.json`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": { "file": "manifest.json", "path": "deeper.current" }
+  }
+}
+```

@@ -13,6 +13,12 @@ mock({
 
 const namespace = 'bumper';
 
+const readFile = file =>
+  fs
+    .readFileSync(file)
+    .toString()
+    .trim();
+
 test('should not throw', async t => {
   const options = { [namespace]: {} };
   const plugin = factory(Plugin, { namespace, options });
@@ -37,19 +43,26 @@ test('should write indented JSON file', async t => {
   const options = { [namespace]: { out: './manifest.json' } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('1.2.3');
-  t.is(fs.readFileSync('./manifest.json').toString(), `{${EOL}  "version": "1.2.3"${EOL}}${EOL}`);
+  t.is(readFile('./manifest.json'), `{${EOL}  "version": "1.2.3"${EOL}}`);
 });
 
 test('should write new, indented JSON file', async t => {
   const options = { [namespace]: { out: ['./null.json'] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('0.0.0');
-  t.is(fs.readFileSync('./null.json').toString(), `{${EOL}  "version": "0.0.0"${EOL}}${EOL}`);
+  t.is(readFile('./null.json'), `{${EOL}  "version": "0.0.0"${EOL}}`);
+});
+
+test('should write version at path', async t => {
+  const options = { [namespace]: { out: { file: './deep.json', path: 'deep.sub.version' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await plugin.bump('1.2.3');
+  t.is(readFile('./deep.json'), JSON.stringify({ deep: { sub: { version: '1.2.3' } } }, null, '  '));
 });
 
 test('should write plain text file', async t => {
   const options = { [namespace]: { out: [{ file: './VERSION', type: 'text/plain' }] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
-  t.is(fs.readFileSync('./VERSION').toString(), '3.2.1');
+  t.is(readFile('./VERSION'), '3.2.1');
 });
