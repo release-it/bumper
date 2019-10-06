@@ -8,6 +8,7 @@ const { Plugin } = require('release-it');
 
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
+const noop = Promise.resolve();
 
 const parseFileOption = option => {
   const file = typeof option === 'string' ? option : option.file;
@@ -36,10 +37,16 @@ class Bumper extends Plugin {
 
   bump(version) {
     const { out } = this.options;
+    const { isDryRun } = this.global;
     if (!out) return;
     return Promise.all(
       castArray(out).map(async out => {
         const { file, type, path } = parseFileOption(out);
+
+        this.log.exec(`Writing version to ${file}`, isDryRun);
+
+        if (isDryRun) return noop;
+
         if (type === 'application/json') {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';

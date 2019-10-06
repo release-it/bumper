@@ -8,7 +8,8 @@ const Plugin = require('.');
 mock({
   './bower.json': JSON.stringify({ version: '1.0.0' }),
   './foo.txt': '2.0.0\n',
-  './manifest.json': '{}'
+  './manifest.json': '{}',
+  './dryrun.json': JSON.stringify({ version: '1.0.0' })
 });
 
 const namespace = 'bumper';
@@ -65,4 +66,11 @@ test('should write plain text file', async t => {
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
   t.is(readFile('./VERSION'), '3.2.1');
+});
+
+test('should not write in dry run', async t => {
+  const options = { [namespace]: { in: './dryrun.json' } };
+  const plugin = factory(Plugin, { namespace, options, global: { isDryRun: true } });
+  await plugin.bump('1.0.1');
+  t.is(readFile('./dryrun.json'), `{"version":"1.0.0"}`);
 });
