@@ -1,6 +1,6 @@
 {
   "name": "@release-it/bumper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Version read/write plugin for release-it",
   "main": "index.js",
   "scripts": {
