@@ -63,9 +63,8 @@ class Bumper extends Plugin {
         } else if (type === 'text/plain') {
           if ( path === 'replace' ) {
             const data = await readFile(file, 'utf8').catch(() => '{}');
-            const latestVersion = await this.getLatestVersion();
-            this.log.info(`Replacing ${latestVersion} by ${version} in ${file}...`)
-            return writeFile(file, data.replace(new RegExp(latestVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g'), version));
+            this.log.info(`Replacing ${this.config.contextOptions.latestVersion} by ${version} in ${file}...`)
+            return writeFile(file, data.replace(new RegExp(this.config.contextOptions.latestVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g'), version));
           }
           return writeFile(file, version);
         }
