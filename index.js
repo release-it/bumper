@@ -4,6 +4,7 @@ const get = require('lodash.get');
 const set = require('lodash.set');
 const castArray = require('lodash.castarray');
 const detectIndent = require('detect-indent');
+const yaml = require('js-yaml');
 const { Plugin } = require('release-it');
 
 const readFile = util.promisify(fs.readFile);
@@ -53,12 +54,18 @@ class Bumper extends Plugin {
           const parsed = JSON.parse(data);
           set(parsed, path, version);
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
+        } else if (type === 'text/yaml') {
+          const data = await readFile(file, 'utf8').catch(() => '{}');
+          const indent = detectIndent(data).indent || '  ';
+          const parsed = yaml.safeLoad(data);
+          set(parsed, path, version);
+          return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
         } else if (type === 'text/plain') {
           if ( path === 'replace' ) {
             const data = await readFile(file, 'utf8').catch(() => '{}');
             const latestVersion = await this.getLatestVersion();
             this.log.info(`Replacing ${latestVersion} by ${version} in ${file}...`)
-            return writeFile(file, data.replace(latestVersion, version));
+            return writeFile(file, data.replace(new RegExp(latestVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g'), version));
           }
           return writeFile(file, version);
         }

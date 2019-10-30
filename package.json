@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "detect-indent": "^6.0.0",
+    "js-yaml": "^3.13.1",
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
