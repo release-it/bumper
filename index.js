@@ -54,6 +54,12 @@ class Bumper extends Plugin {
           set(parsed, path, version);
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
         } else if (type === 'text/plain') {
+          if ( path === 'replace' ) {
+            const data = await readFile(file, 'utf8').catch(() => '{}');
+            const latestVersion = await this.getLatestVersion();
+            this.log.info(`Replacing ${latestVersion} by ${version} in ${file}...`)
+            return writeFile(file, data.replace(latestVersion, version));
+          }
           return writeFile(file, version);
         }
       })
