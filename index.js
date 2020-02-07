@@ -54,7 +54,7 @@ class Bumper extends Plugin {
           const parsed = JSON.parse(data);
           set(parsed, path, version);
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
-        } else if (type === 'text/yaml') {
+        } else if (type === 'text/yaml' || type === 'application/x-yaml') {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';
           const parsed = yaml.safeLoad(data);
