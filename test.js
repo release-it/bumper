@@ -8,6 +8,7 @@ const Plugin = require('.');
 mock({
   './bower.json': JSON.stringify({ version: '1.0.0' }),
   './foo.txt': '2.0.0\n',
+  './foo.php': '/* comments\nversion: v1.0.0 */ <? echo <p>hello world</p>; ?>\n',
   './manifest.json': '{}',
   './dryrun.json': JSON.stringify({ version: '1.0.0' })
 });
@@ -61,11 +62,27 @@ test('should write version at path', async t => {
   t.is(readFile('./deep.json'), JSON.stringify({ deep: { sub: { version: '1.2.3' } } }, null, '  '));
 });
 
-test('should write plain text file', async t => {
+test('should write plain version text file', async t => {
   const options = { [namespace]: { out: [{ file: './VERSION', type: 'text/plain' }] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
   t.is(readFile('./VERSION'), '3.2.1');
+});
+
+test('should write plain text file', async t => {
+  const options = { [namespace]: { in: './bower.json', out: { file: './foo.php', type: 'text/php' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  t.is(readFile('./foo.php'), '/* comments\nversion: v1.0.1 */ <? echo <p>hello world</p>; ?>');
+});
+
+test('should read/write plain text file', async t => {
+  const options = {
+    [namespace]: { in: { file: './foo.txt', type: 'text/plain' }, out: { file: './foo.txt', type: 'text/plain' } }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  t.is(readFile('./foo.txt'), '2.0.1');
 });
 
 test('should not write in dry run', async t => {

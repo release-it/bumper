@@ -60,13 +60,12 @@ class Bumper extends Plugin {
           const parsed = yaml.safeLoad(data);
           set(parsed, path, version);
           return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
-        } else if (type === 'text/plain') {
-          if ( path === 'replace' ) {
-            const data = await readFile(file, 'utf8').catch(() => '{}');
-            this.log.info(`Replacing ${this.config.contextOptions.latestVersion} by ${version} in ${file}...`)
-            return writeFile(file, data.replace(new RegExp(this.config.contextOptions.latestVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 'g'), version));
-          }
-          return writeFile(file, version);
+        } else if (type.startsWith('text/')) {
+          const { latestVersion } = this.config.contextOptions;
+          const read = await readFile(file, 'utf8').catch(() => latestVersion);
+          const versionMatch = new RegExp((latestVersion || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+          const write = read ? read.replace(versionMatch, version) : version;
+          return writeFile(file, write);
         }
       })
     );
