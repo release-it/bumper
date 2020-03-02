@@ -72,3 +72,16 @@ The `path` option (default: `"version"`) can be used to change a different prope
   }
 }
 ```
+
+The `glob` option (default: `false`) can be used to activate file globbing using [fast-glob](https://github.com/mrmlnc/fast-glob#basic-syntax). 
+the following example will replace the version number in all files ending with a php extension in all subdirectories of `src`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "src/**/*.php"
+    }
+  }
+}
+```

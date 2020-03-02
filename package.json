@@ -33,7 +33,8 @@
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
     "mock-fs": "^4.10.1",
-    "release-it": "^12.4.2"
+    "release-it": "^12.4.2",
+    "fast-glob": "^3.2.2"
   },
   "devDependencies": {
     "ava": "^2.4.0",
