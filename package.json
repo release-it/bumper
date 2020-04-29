@@ -4,7 +4,7 @@
   "description": "Version read/write plugin for release-it",
   "main": "index.js",
   "scripts": {
-    "test": "ava test.js --verbose",
+    "test": "bron test.js",
     "release": "release-it"
   },
   "keywords": [
@@ -36,7 +36,7 @@
     "release-it": "^12.4.2"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "bron": "^1.1.1",
     "sinon": "^7.5.0"
   },
   "engines": {
