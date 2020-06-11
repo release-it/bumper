@@ -6,6 +6,7 @@ const castArray = require('lodash.castarray');
 const detectIndent = require('detect-indent');
 const yaml = require('js-yaml');
 const toml = require('@iarna/toml');
+const ini = require('ini');
 const { Plugin } = require('release-it');
 
 const readFile = util.promisify(fs.readFile);
@@ -65,11 +66,18 @@ class Bumper extends Plugin {
           return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
         }
 
-        if (type === 'application/toml') {
+        if (type === 'toml') {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const parsed = toml.parse(data);
           set(parsed, path, version);
           return writeFile(file, toml.stringify(parsed));
+        }
+
+        if (type === 'ini') {
+          const data = await readFile(file, 'utf8').catch(() => '{}');
+          const parsed = ini.parse(data);
+          set(parsed, path, version);
+          return writeFile(file, ini.encode(parsed));
         }
 
         if (type.startsWith('text/')) {

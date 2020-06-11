@@ -13,7 +13,8 @@ mock({
   './manifest.json': '{}',
   './dryrun.json': JSON.stringify({ version: '1.0.0' }),
   './foo.toml': `[tool.test]
-version = "1.0.0"`
+version = "1.0.0"`,
+  './foo.ini': `path.version=1.0.0\npath.name=fake`,
 });
 
 const namespace = 'bumper';
@@ -69,10 +70,17 @@ test('should write plain version text file', async () => {
 });
 
 test('should write toml file', async () => {
-  const options = { [namespace]: { out: { file: './foo.toml', type: 'application/toml', path: 'tool.test.version' } } };
+  const options = { [namespace]: { out: { file: './foo.toml', type: 'toml', path: 'tool.test.version' } } };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./foo.toml'), '[tool.test]\nversion = "1.0.1"');
+});
+
+test('should write ini file', async () => {
+  const options = { [namespace]: { out: { file: './foo.ini', type: 'ini', path: 'path.version' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.ini'), 'path.version=1.0.1\npath.name=fake');
 });
 
 test('should write plain text file', async () => {

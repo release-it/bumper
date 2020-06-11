@@ -27,14 +27,15 @@
     "name": "Lars Kappert"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "detect-indent": "^6.0.0",
+    "ini": "^1.3.5",
     "js-yaml": "^3.13.1",
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
     "mock-fs": "^4.12.0",
-    "release-it": "^13.5.7",
-    "@iarna/toml": "^2.2.5"
+    "release-it": "^13.5.7"
   },
   "devDependencies": {
     "bron": "^1.1.1",
