@@ -5,6 +5,7 @@ const set = require('lodash.set');
 const castArray = require('lodash.castarray');
 const detectIndent = require('detect-indent');
 const yaml = require('js-yaml');
+const toml = require('@iarna/toml');
 const { Plugin } = require('release-it');
 
 const readFile = util.promisify(fs.readFile);
@@ -54,13 +55,24 @@ class Bumper extends Plugin {
           const parsed = JSON.parse(data);
           set(parsed, path, version);
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
-        } else if (type === 'text/yaml' || type === 'application/x-yaml') {
+        }
+
+        if (type === 'text/yaml' || type === 'application/x-yaml') {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';
           const parsed = yaml.safeLoad(data);
           set(parsed, path, version);
           return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
-        } else if (type.startsWith('text/')) {
+        }
+
+        if (type === 'application/toml') {
+          const data = await readFile(file, 'utf8').catch(() => '{}');
+          const parsed = toml.parse(data);
+          set(parsed, path, version);
+          return writeFile(file, toml.stringify(parsed));
+        }
+
+        if (type.startsWith('text/')) {
           const { latestVersion } = this.config.contextOptions;
           const read = await readFile(file, 'utf8').catch(() => latestVersion);
           const versionMatch = new RegExp((latestVersion || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
