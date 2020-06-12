@@ -50,7 +50,12 @@ class Bumper extends Plugin {
 
         if (isDryRun) return noop;
 
-        if (type === 'application/json') {
+        const isJson = ['application/json', 'json'].includes(type)
+        const isYaml = ['text/yaml', 'application/x-yaml', 'yaml', 'yml'].includes(type)
+        const isToml = (type === 'toml')
+        const isIni = ['application/textedit', 'ini'].includes(type)
+
+        if (isJson) {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';
           const parsed = JSON.parse(data);
@@ -58,7 +63,7 @@ class Bumper extends Plugin {
           return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
         }
 
-        if (type === 'text/yaml' || type === 'application/x-yaml') {
+        if (isYaml) {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const indent = detectIndent(data).indent || '  ';
           const parsed = yaml.safeLoad(data);
@@ -66,14 +71,14 @@ class Bumper extends Plugin {
           return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
         }
 
-        if (type === 'toml') {
+        if (isToml) {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const parsed = toml.parse(data);
           set(parsed, path, version);
           return writeFile(file, toml.stringify(parsed));
         }
 
-        if (type === 'ini') {
+        if (isIni) {
           const data = await readFile(file, 'utf8').catch(() => '{}');
           const parsed = ini.parse(data);
           set(parsed, path, version);
