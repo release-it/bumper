@@ -40,6 +40,13 @@ test('should return latest version from plain text file', async () => {
   assert.equal(version, '2.0.0');
 });
 
+test('should return latest version from plain text file (.txt)', async () => {
+  const options = { [namespace]: { in: { file: './foo.txt' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  const version = await plugin.getLatestVersion();
+  assert.equal(version, '2.0.0');
+});
+
 test('should write indented JSON file', async () => {
   const options = { [namespace]: { out: './manifest.json' } };
   const plugin = factory(Plugin, { namespace, options });
@@ -68,15 +75,29 @@ test('should write plain version text file', async () => {
   assert.equal(readFile('./VERSION'), '3.2.1');
 });
 
+test('should write plain version text file (default text type)', async () => {
+  const options = { [namespace]: { out: [{ file: './VERSION' }] } };
+  const plugin = factory(Plugin, { namespace, options });
+  await plugin.bump('3.2.1');
+  assert.equal(readFile('./VERSION'), '3.2.1');
+});
+
 test('should write toml file', async () => {
-  const options = { [namespace]: { out: { file: './foo.toml', type: 'toml', path: 'tool.test.version' } } };
+  const options = { [namespace]: { out: { file: './foo.toml', type: 'application/toml', path: 'tool.test.version' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.toml'), '[tool.test]\nversion = "1.0.1"');
+});
+
+test('should write toml file (.toml)', async () => {
+  const options = { [namespace]: { out: { file: './foo.toml', path: 'tool.test.version' } } };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./foo.toml'), '[tool.test]\nversion = "1.0.1"');
 });
 
 test('should write ini file', async () => {
-  const options = { [namespace]: { out: { file: './foo.ini', type: 'ini', path: 'path.version' } } };
+  const options = { [namespace]: { out: { file: './foo.ini', path: 'path.version' } } };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./foo.ini'), 'path.version=1.0.1\npath.name=fake');
@@ -92,6 +113,15 @@ test('should write plain text file', async () => {
 test('should read/write plain text file', async () => {
   const options = {
     [namespace]: { in: { file: './foo.txt', type: 'text/plain' }, out: { file: './foo.txt', type: 'text/plain' } }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.txt'), '2.0.1');
+});
+
+test('should read/write plain text file (.txt)', async () => {
+  const options = {
+    [namespace]: { in: { file: './foo.txt' }, out: { file: './foo.txt' } }
   };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
