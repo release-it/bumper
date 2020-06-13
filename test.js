@@ -11,7 +11,10 @@ mock({
   './foo.txt': '2.0.0\n',
   './foo.php': '/* comments\nversion: v1.0.0 */ <? echo <p>hello world</p>; ?>\n',
   './manifest.json': '{}',
-  './dryrun.json': JSON.stringify({ version: '1.0.0' })
+  './dryrun.json': JSON.stringify({ version: '1.0.0' }),
+  './foo.toml': `[tool.test]
+version = "1.0.0"`,
+  './foo.ini': `path.version=1.0.0\npath.name=fake`,
 });
 
 const namespace = 'bumper';
@@ -64,6 +67,20 @@ test('should write plain version text file', async () => {
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
   assert.equal(readFile('./VERSION'), '3.2.1');
+});
+
+test('should write toml file', async () => {
+  const options = { [namespace]: { out: { file: './foo.toml', type: 'toml', path: 'tool.test.version' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.toml'), '[tool.test]\nversion = "1.0.1"');
+});
+
+test('should write ini file', async () => {
+  const options = { [namespace]: { out: { file: './foo.ini', type: 'ini', path: 'path.version' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.ini'), 'path.version=1.0.1\npath.name=fake');
 });
 
 test('should write plain text file', async () => {
