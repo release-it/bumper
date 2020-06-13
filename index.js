@@ -50,10 +50,10 @@ class Bumper extends Plugin {
 
         if (isDryRun) return noop;
 
-        const isJson = ['application/json', 'json'].includes(type)
-        const isYaml = ['text/yaml', 'application/x-yaml', 'yaml', 'yml'].includes(type)
-        const isToml = (type === 'toml')
-        const isIni = ['application/textedit', 'ini'].includes(type)
+        const isJson = ['application/json', 'json'].includes(type);
+        const isYaml = ['text/yaml', 'application/x-yaml', 'yaml', 'yml'].includes(type);
+        const isToml = type === 'toml';
+        const isIni = ['application/textedit', 'ini'].includes(type);
 
         if (isJson) {
           const data = await readFile(file, 'utf8').catch(() => '{}');

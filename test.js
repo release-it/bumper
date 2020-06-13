@@ -12,9 +12,8 @@ mock({
   './foo.php': '/* comments\nversion: v1.0.0 */ <? echo <p>hello world</p>; ?>\n',
   './manifest.json': '{}',
   './dryrun.json': JSON.stringify({ version: '1.0.0' }),
-  './foo.toml': `[tool.test]
-version = "1.0.0"`,
-  './foo.ini': `path.version=1.0.0\npath.name=fake`,
+  './foo.toml': '[tool.test]\nversion = "1.0.0"',
+  './foo.ini': `path.version=1.0.0\npath.name=fake`
 });
 
 const namespace = 'bumper';
