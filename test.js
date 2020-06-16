@@ -8,7 +8,8 @@ const Plugin = require('.');
 
 mock({
   './bower.json': JSON.stringify({ version: '1.0.0' }),
-  './foo.txt': '2.0.0\n',
+  './foo.txt': '1.0.0\n',
+  './foo2.txt': '1.0.0\n',
   './foo.php': '/* comments\nversion: v1.0.0 */ <? echo <p>hello world</p>; ?>\n',
   './manifest.json': '{}',
   './dryrun.json': JSON.stringify({ version: '1.0.0' }),
@@ -37,14 +38,14 @@ test('should return latest version from plain text file', async () => {
   const options = { [namespace]: { in: { file: './foo.txt', type: 'text/plain' } } };
   const plugin = factory(Plugin, { namespace, options });
   const version = await plugin.getLatestVersion();
-  assert.equal(version, '2.0.0');
+  assert.equal(version, '1.0.0');
 });
 
 test('should return latest version from plain text file (.txt)', async () => {
   const options = { [namespace]: { in: { file: './foo.txt' } } };
   const plugin = factory(Plugin, { namespace, options });
   const version = await plugin.getLatestVersion();
-  assert.equal(version, '2.0.0');
+  assert.equal(version, '1.0.0');
 });
 
 test('should write indented JSON file', async () => {
@@ -116,7 +117,7 @@ test('should read/write plain text file', async () => {
   };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
-  assert.equal(readFile('./foo.txt'), '2.0.1');
+  assert.equal(readFile('./foo.txt'), '1.0.1');
 });
 
 test('should read/write plain text file (.txt)', async () => {
@@ -125,7 +126,29 @@ test('should read/write plain text file (.txt)', async () => {
   };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
-  assert.equal(readFile('./foo.txt'), '2.0.1');
+  assert.equal(readFile('./foo.txt'), '1.0.1');
+});
+
+test('should read one and write multiple files', async () => {
+  const options = {
+    [namespace]: { in: { file: './foo.txt' }, out: './foo*.txt' }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.txt'), '1.0.1');
+  assert.equal(readFile('./foo2.txt'), '1.0.1');
+});
+
+test('should write various file types', async () => {
+  const options = {
+    [namespace]: { out: [{ file: './foo*.txt' }, { file: './(bower|manifest).json' }] }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.txt'), '1.0.1');
+  assert.equal(readFile('./foo2.txt'), '1.0.1');
+  assert.equal(readFile('./bower.json'), '{\n  "version": "1.0.1"\n}');
+  assert.equal(readFile('./manifest.json'), '{\n  "version": "1.0.1"\n}');
 });
 
 test('should not write in dry run', async () => {
