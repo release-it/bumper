@@ -53,7 +53,6 @@ class Bumper extends Plugin {
       const type = getFileType(file, mimeType);
       const data = await readFile(file, 'utf8').catch(() => '{}');
       const parsed = await parse(data, type);
-      console.log({ type, parsed });
       return typeof parsed === 'string' ? parsed : get(parsed, path);
     }
     return null;
