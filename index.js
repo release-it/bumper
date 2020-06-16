@@ -86,18 +86,18 @@ class Bumper extends Plugin {
         const parsed = await parse(data, type);
         const indent = typeof data === 'string' ? detectIndent(data).indent || '  ' : null;
 
+        if (typeof parsed !== 'string') {
+          castArray(path).forEach(path => set(parsed, path, version));
+        }
+
         switch (type) {
           case 'json':
-            set(parsed, path, version);
             return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
           case 'yaml':
-            set(parsed, path, version);
             return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
           case 'toml':
-            set(parsed, path, version);
             return writeFile(file, toml.stringify(parsed));
           case 'ini':
-            set(parsed, path, version);
             return writeFile(file, ini.encode(parsed));
           default:
             const versionMatch = new RegExp((latestVersion || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');

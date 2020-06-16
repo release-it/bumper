@@ -91,3 +91,5 @@ The `path` option (default: `"version"`) can be used to change a different prope
   }
 }
 ```
+
+Multiple paths can be provided using an array.

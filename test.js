@@ -69,6 +69,18 @@ test('should write version at path', async () => {
   assert.equal(readFile('./deep.json'), JSON.stringify({ deep: { sub: { version: '1.2.3' } } }, null, '  '));
 });
 
+test('should write version at multiple paths', async () => {
+  const options = {
+    [namespace]: { out: { file: './multi.json', path: ['version', 'deep.version', 'deep.sub.version'] } }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await plugin.bump('1.2.3');
+  assert.equal(
+    readFile('./multi.json'),
+    JSON.stringify({ version: '1.2.3', deep: { version: '1.2.3', sub: { version: '1.2.3' } } }, null, '  ')
+  );
+});
+
 test('should write plain version text file', async () => {
   const options = { [namespace]: { out: [{ file: './VERSION', type: 'text/plain' }] } };
   const plugin = factory(Plugin, { namespace, options });
