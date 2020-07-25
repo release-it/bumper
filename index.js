@@ -1,5 +1,6 @@
 const fs = require('fs');
 const util = require('util');
+const { EOL } = require('os');
 const glob = require('fast-glob');
 const get = require('lodash.get');
 const set = require('lodash.set');
@@ -41,7 +42,7 @@ const parse = async (data, type) => {
     case 'ini':
       return ini.parse(data);
     default:
-      return (data || '').toString().trim();
+      return (data || '').toString();
   }
 };
 
@@ -54,7 +55,7 @@ class Bumper extends Plugin {
       const type = getFileType(file, mimeType);
       const data = await readFile(file, 'utf8').catch(() => '{}');
       const parsed = await parse(data, type);
-      return typeof parsed === 'string' ? parsed : get(parsed, path);
+      return typeof parsed === 'string' ? parsed.trim() : get(parsed, path);
     }
     return null;
   }
@@ -100,8 +101,8 @@ class Bumper extends Plugin {
           case 'ini':
             return writeFile(file, ini.encode(parsed));
           default:
-            const versionMatch = new RegExp((latestVersion || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-            const write = parsed ? parsed.replace(versionMatch, version) : version;
+            const versionMatch = new RegExp(latestVersion || '', 'g');
+            const write = parsed ? parsed.replace(versionMatch, version) : version + EOL;
             return writeFile(file, write);
         }
       })
