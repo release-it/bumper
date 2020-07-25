@@ -29,14 +29,14 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "detect-indent": "^6.0.0",
-    "fast-glob": "^3.2.3",
+    "fast-glob": "^3.2.4",
     "ini": "^1.3.5",
     "js-yaml": "^3.14.0",
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
     "mock-fs": "^4.12.0",
-    "release-it": "^13.6.3"
+    "release-it": "^13.6.5"
   },
   "devDependencies": {
     "bron": "^1.1.1",
