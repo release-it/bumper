@@ -11,13 +11,18 @@ In [release-it](https://github.com/release-it/release-it) config:
 ```json
 "plugins": {
   "@release-it/bumper": {
-    "out": "manifest.json"
+    "in": "composer.json",
+    "out": "composer.json",
   }
 }
 ```
 
-In case the `in` option is used, the version from this file will take precedence over the `version` from `package.json`
-or the latest Git tag (which release-it uses by default).
+- Use only the `in` option to _read_ the version from this file in the release-it process.
+- Use only the `out` option to _write_ the version that was determined by release-it to this file.
+- Use both to read _and_ write the `version` property from/to this file.
+
+The `version` from the `in` file will take precedence over the latest Git tag (and the `version` from `package.json` if
+it exists) in release-it to determine the latest version.
 
 The supported file types are:
 
@@ -78,7 +83,7 @@ files to write to:
 }
 ```
 
-The `path` option (default: `"version"`) can be used to change a different property. the following example will set the
+The `path` option (default: `"version"`) can be used to change a different property. The following example will set the
 `current.version` property to the new version in `manifest.json`:
 
 ```json
