@@ -62,7 +62,7 @@ class Bumper extends Plugin {
 
   async bump(version) {
     const { out } = this.options;
-    const { isDryRun } = this.global;
+    const { isDryRun } = this.config;
     const { latestVersion } = this.config.contextOptions;
     if (!out) return;
 

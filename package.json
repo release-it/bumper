@@ -35,12 +35,15 @@
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "mock-fs": "^4.12.0",
-    "release-it": "^13.6.7"
+    "mock-fs": "^4.12.0"
   },
   "devDependencies": {
     "bron": "^1.1.1",
+    "release-it": "^14.0.0",
     "sinon": "^9.0.3"
+  },
+  "peerDependencies": {
+    "release-it": "^14.0.0"
   },
   "engines": {
     "node": ">=8"
