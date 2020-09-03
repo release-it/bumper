@@ -35,7 +35,7 @@
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "mock-fs": "^4.12.0"
+    "mock-fs": "^4.13.0"
   },
   "devDependencies": {
     "bron": "^1.1.1",
