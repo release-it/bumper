@@ -1,6 +1,6 @@
 {
   "name": "@release-it/bumper",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Version read/write plugin for release-it",
   "main": "index.js",
   "scripts": {
@@ -48,7 +48,7 @@
     "release-it": "^14.0.0"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "release-it": {
     "hooks": {
