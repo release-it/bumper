@@ -9,6 +9,7 @@ const detectIndent = require('detect-indent');
 const yaml = require('js-yaml');
 const toml = require('@iarna/toml');
 const ini = require('ini');
+const semver = require('semver');
 const { Plugin } = require('release-it');
 
 const readFile = util.promisify(fs.readFile);
@@ -55,7 +56,8 @@ class Bumper extends Plugin {
       const type = getFileType(file, mimeType);
       const data = await readFile(file, 'utf8').catch(() => '{}');
       const parsed = await parse(data, type);
-      return typeof parsed === 'string' ? parsed.trim() : get(parsed, path);
+      const version = typeof parsed === 'string' ? parsed.trim() : get(parsed, path);
+      return semver.parse(version).toString();
     }
     return null;
   }
@@ -63,7 +65,7 @@ class Bumper extends Plugin {
   async bump(version) {
     const { out } = this.options;
     const { isDryRun } = this.config;
-    const { latestVersion } = this.config.contextOptions;
+    const { latestVersion } = this.config.getContext();
     if (!out) return;
 
     const expandedOptions = castArray(out).map(options => (typeof options === 'string' ? { file: options } : options));

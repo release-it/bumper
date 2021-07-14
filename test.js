@@ -14,7 +14,9 @@ mock({
   './manifest.json': `{}${EOL}`,
   './dryrun.json': JSON.stringify({ version: '1.0.0' }) + EOL,
   './foo.toml': `[tool.test]${EOL}version = "1.0.0"${EOL}`,
-  './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`
+  './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`,
+  './VERSION': `v1.0.0${EOL}`,
+  './README.md': `Release v1.0.0${EOL}`
 });
 
 const namespace = 'bumper';
@@ -149,6 +151,16 @@ test('should read one and write multiple files', async () => {
   await runTasks(plugin);
   assert.equal(readFile('./foo.txt'), `1.0.1${EOL}`);
   assert.equal(readFile('./foo2.txt'), `1.0.1${EOL}`);
+});
+
+test('should read one and write multiple files and respect prefix', async () => {
+  const options = {
+    [namespace]: { in: { file: 'VERSION', type: 'text/plain' }, out: ['README.md', 'VERSION'] }
+  };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./README.md'), `Release v1.0.1${EOL}`);
+  assert.equal(readFile('./VERSION'), `v1.0.1${EOL}`);
 });
 
 test('should write various file types', async () => {
