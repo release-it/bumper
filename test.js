@@ -84,17 +84,17 @@ test('should write version at multiple paths', async () => {
 });
 
 test('should write plain version text file', async () => {
-  const options = { [namespace]: { out: [{ file: './VERSION', type: 'text/plain' }] } };
+  const options = { [namespace]: { out: [{ file: './VERSION-OUT', type: 'text/plain' }] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
-  assert.equal(readFile('./VERSION'), `3.2.1${EOL}`);
+  assert.equal(readFile('./VERSION-OUT'), `3.2.1${EOL}`);
 });
 
 test('should write plain version text file (default text type)', async () => {
-  const options = { [namespace]: { out: [{ file: './VERSION' }] } };
+  const options = { [namespace]: { out: [{ file: './VERSION-OUT' }] } };
   const plugin = factory(Plugin, { namespace, options });
   await plugin.bump('3.2.1');
-  assert.equal(readFile('./VERSION'), `3.2.1${EOL}`);
+  assert.equal(readFile('./VERSION-OUT'), `3.2.1${EOL}`);
 });
 
 test('should write toml file', async () => {
