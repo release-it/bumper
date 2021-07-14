@@ -36,7 +36,7 @@ const parse = async (data, type) => {
     case 'json':
       return JSON.parse(data);
     case 'yaml':
-      return yaml.safeLoad(data);
+      return yaml.load(data);
     case 'toml':
       return toml.parse(data);
     case 'ini':
