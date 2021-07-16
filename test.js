@@ -16,7 +16,8 @@ mock({
   './foo.toml': `[tool.test]${EOL}version = "1.0.0"${EOL}`,
   './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`,
   './VERSION': `v1.0.0${EOL}`,
-  './README.md': `Release v1.0.0${EOL}`
+  './README.md': `Release v1.0.0${EOL}`,
+  './foo.yaml': `version: v1.0.0${EOL}`
 });
 
 const namespace = 'bumper';
@@ -45,6 +46,13 @@ test('should return latest version from plain text file', async () => {
 
 test('should return latest version from plain text file (.txt)', async () => {
   const options = { [namespace]: { in: { file: './foo.txt' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  const version = await plugin.getLatestVersion();
+  assert.equal(version, '1.0.0');
+});
+
+test('should return latest version from YAML file', async () => {
+  const options = { [namespace]: { in: './foo.yaml' } };
   const plugin = factory(Plugin, { namespace, options });
   const version = await plugin.getLatestVersion();
   assert.equal(version, '1.0.0');
@@ -123,6 +131,13 @@ test('should write plain text file', async () => {
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./foo.php'), `/* comments${EOL}version: v1.0.1 */ <? echo <p>hello world</p>; ?>${EOL}`);
+});
+
+test('should write YAML file', async () => {
+  const options = { [namespace]: { out: { file: './foo.yaml' } } };
+  const plugin = factory(Plugin, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./foo.yaml'), `version: 1.0.1${EOL}`);
 });
 
 test('should read/write plain text file', async () => {
