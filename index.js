@@ -97,7 +97,7 @@ class Bumper extends Plugin {
           case 'json':
             return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
           case 'yaml':
-            return writeFile(file, yaml.safeDump(parsed, { indent: indent.length }) + '\n');
+            return writeFile(file, yaml.dump(parsed, { indent: indent.length }) + '\n');
           case 'toml':
             return writeFile(file, toml.stringify(parsed));
           case 'ini':
