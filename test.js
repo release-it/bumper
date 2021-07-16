@@ -137,7 +137,7 @@ test('should write YAML file', async () => {
   const options = { [namespace]: { out: { file: './foo.yaml' } } };
   const plugin = factory(Plugin, { namespace, options });
   await runTasks(plugin);
-  assert.equal(readFile('./foo.yaml'), `version: 1.0.1${EOL}${EOL}`);
+  assert.equal(readFile('./foo.yaml'), `version: 1.0.1${EOL}`);
 });
 
 test('should read/write plain text file', async () => {
