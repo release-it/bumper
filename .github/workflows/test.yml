@@ -1,6 +1,6 @@
-name: "Tests"
+name: Tests
 
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ["12", "14", "16", "17"]
+        node-version: [12, 14, 16, 17]
 
     steps:
       - uses: actions/checkout@v2.3.4
