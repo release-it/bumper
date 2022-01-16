@@ -1,23 +1,21 @@
-const fs = require('fs');
-const util = require('util');
-const { EOL } = require('os');
-const glob = require('fast-glob');
-const get = require('lodash.get');
-const set = require('lodash.set');
-const castArray = require('lodash.castarray');
-const detectIndent = require('detect-indent');
-const yaml = require('js-yaml');
-const toml = require('@iarna/toml');
-const ini = require('ini');
-const semver = require('semver');
-const { Plugin } = require('release-it');
+import { readFileSync, writeFileSync } from 'fs';
+import { EOL } from 'os';
+import glob from 'fast-glob';
+import get from 'lodash.get';
+import set from 'lodash.set';
+import castArray from 'lodash.castarray';
+import detectIndent from 'detect-indent';
+import yaml from 'js-yaml';
+import toml from '@iarna/toml';
+import ini from 'ini';
+import semver from 'semver';
+import { Plugin } from 'release-it';
 
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
 const noop = Promise.resolve();
+const isString = a => typeof a === 'string';
 
 const parseFileOption = option => {
-  const file = typeof option === 'string' ? option : option.file;
+  const file = isString(option) ? option : option.file;
   const mimeType = typeof option !== 'string' ? option.type : null;
   const path = (typeof option !== 'string' && option.path) || 'version';
   return { file, mimeType, path };
@@ -54,9 +52,16 @@ class Bumper extends Plugin {
     const { file, mimeType, path } = parseFileOption(option);
     if (file) {
       const type = getFileType(file, mimeType);
-      const data = await readFile(file, 'utf8').catch(() => '{}');
+      let data;
+
+      try {
+        data = readFileSync(file, 'utf8');
+      } catch (error) {
+        data = '{}';
+      }
+
       const parsed = await parse(data, type);
-      const version = typeof parsed === 'string' ? parsed.trim() : get(parsed, path);
+      const version = isString(parsed) ? parsed.trim() : get(parsed, path);
       return semver.parse(version).toString();
     }
     return null;
@@ -68,13 +73,21 @@ class Bumper extends Plugin {
     const { latestVersion } = this.config.getContext();
     if (!out) return;
 
-    const expandedOptions = castArray(out).map(options => (typeof options === 'string' ? { file: options } : options));
+    const expandedOptions = castArray(out).map(options => (isString(options) ? { file: options } : options));
 
     const options = [];
     for (const option of expandedOptions) {
       if (glob.isDynamicPattern(option.file)) {
-        const files = await glob(option.file, { onlyFiles: true, unique: true });
-        options.push(...files.map(file => Object.assign({}, option, { file })));
+        const files = await glob(option.file, {
+          onlyFiles: true,
+          unique: true
+        });
+        options.push(
+          ...files.map(file => ({
+            ...option,
+            file
+          }))
+        );
       } else options.push(option);
     }
 
@@ -85,9 +98,17 @@ class Bumper extends Plugin {
         if (isDryRun) return noop;
 
         const type = getFileType(file, mimeType);
-        const data = await readFile(file, 'utf8').catch(() => (type === 'text' ? latestVersion : '{}'));
+
+        let data;
+
+        try {
+          data = readFileSync(file, 'utf8');
+        } catch (error) {
+          data = type === 'text' ? latestVersion : '{}';
+        }
+
         const parsed = await parse(data, type);
-        const indent = typeof data === 'string' ? detectIndent(data).indent || '  ' : null;
+        const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
 
         if (typeof parsed !== 'string') {
           castArray(path).forEach(path => set(parsed, path, version));
@@ -95,21 +116,21 @@ class Bumper extends Plugin {
 
         switch (type) {
           case 'json':
-            return writeFile(file, JSON.stringify(parsed, null, indent) + '\n');
+            return writeFileSync(file, JSON.stringify(parsed, null, indent) + '\n');
           case 'yaml':
-            return writeFile(file, yaml.dump(parsed, { indent: indent.length }));
+            return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
           case 'toml':
-            return writeFile(file, toml.stringify(parsed));
+            return writeFileSync(file, toml.stringify(parsed));
           case 'ini':
-            return writeFile(file, ini.encode(parsed));
+            return writeFileSync(file, ini.encode(parsed));
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');
             const write = parsed ? parsed.replace(versionMatch, version) : version + EOL;
-            return writeFile(file, write);
+            return writeFileSync(file, write);
         }
       })
     );
   }
 }
 
-module.exports = Bumper;
+export default Bumper;
