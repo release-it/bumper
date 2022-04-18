@@ -23,7 +23,9 @@ mock({
 
 const namespace = 'bumper';
 
-const readFile = file => readFileSync(file).toString();
+const nl = value => value.split(/\r\n|\r|\n/g).join(EOL);
+
+const readFile = file => nl(readFileSync(file).toString());
 
 test('should not throw', async () => {
   const options = { [namespace]: {} };
@@ -81,7 +83,10 @@ test('should write version at path', async () => {
   };
   const plugin = factory(Bumper, { namespace, options });
   await plugin.bump('1.2.3');
-  assert.equal(readFile('./deep.json'), JSON.stringify({ deep: { sub: { version: '1.2.3' } } }, null, '  ') + EOL);
+  assert.equal(
+    readFile('./deep.json'),
+    `{${EOL}  "deep": {${EOL}    "sub": {${EOL}      "version": "1.2.3"${EOL}    }${EOL}  }${EOL}}${EOL}`
+  );
 });
 
 test('should write version at multiple paths', async () => {
@@ -97,14 +102,7 @@ test('should write version at multiple paths', async () => {
   await plugin.bump('1.2.3');
   assert.equal(
     readFile('./multi.json'),
-    JSON.stringify(
-      {
-        version: '1.2.3',
-        deep: { version: '1.2.3', sub: { version: '1.2.3' } }
-      },
-      null,
-      '  '
-    ) + EOL
+    `{${EOL}  "version": "1.2.3",${EOL}  "deep": {${EOL}    "version": "1.2.3",${EOL}    "sub": {${EOL}      "version": "1.2.3"${EOL}    }${EOL}  }${EOL}}${EOL}`
   );
 });
 
