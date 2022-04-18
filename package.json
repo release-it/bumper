@@ -2,8 +2,8 @@
   "name": "@release-it/bumper",
   "version": "4.0.0-esm.0",
   "description": "Version read/write plugin for release-it",
-  "main": "index.js",
   "type": "module",
+  "exports": "./index.js",
   "scripts": {
     "test": "bron test.js",
     "release": "release-it"
@@ -30,26 +30,26 @@
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "detect-indent": "^6.1.0",
+    "detect-indent": "^7.0.0",
     "fast-glob": "^3.2.7",
-    "ini": "^2.0.0",
+    "ini": "^3.0.0",
     "js-yaml": "^4.1.0",
     "lodash.castarray": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "semver": "^7.3.5"
+    "semver": "^7.3.7"
   },
   "devDependencies": {
     "bron": "^2.0.3",
     "mock-fs": "^5.1.2",
     "release-it": "^15.0.0-esm.4",
-    "sinon": "^12.0.1"
+    "sinon": "^13.0.2"
   },
   "peerDependencies": {
-    "release-it": "^15.0.0-esm.3"
+    "release-it": "^15.0.0-esm.4"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "release-it": {
     "hooks": {
