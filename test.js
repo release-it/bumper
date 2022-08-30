@@ -18,7 +18,8 @@ mock({
   './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`,
   './VERSION': `v1.0.0${EOL}`,
   './README.md': `Release v1.0.0${EOL}`,
-  './foo.yaml': `version: v1.0.0${EOL}`
+  './foo.yaml': `version: v1.0.0${EOL}`,
+  './multi.yaml': `version: v1.0.0${EOL}---${EOL}version: v2.0.0${EOL}`
 });
 
 const namespace = 'bumper';
@@ -61,6 +62,13 @@ test('should return latest version from YAML file', async () => {
   const plugin = factory(Bumper, { namespace, options });
   const version = await plugin.getLatestVersion();
   assert.equal(version, '1.0.0');
+});
+
+test('should return latest version from multi-document YAML file', async () => {
+  const options = { [namespace]: { in: './multi.yaml' } };
+  const plugin = factory(Bumper, { namespace, options });
+  const version = await plugin.getLatestVersion();
+  assert.equal(version, '2.0.0');
 });
 
 test('should write indented JSON file', async () => {
@@ -172,6 +180,13 @@ test('should write YAML file', async () => {
   const plugin = factory(Bumper, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./foo.yaml'), `version: 1.0.1${EOL}`);
+});
+
+test('should write multi-document YAML file', async () => {
+  const options = { [namespace]: { out: { file: './multi.yaml' } } };
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./multi.yaml'), `version: 1.0.1${EOL}---${EOL}version: 1.0.1${EOL}`);
 });
 
 test('should read/write plain text file', async () => {

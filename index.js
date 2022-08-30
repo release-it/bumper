@@ -35,7 +35,7 @@ const parse = async (data, type) => {
     case 'json':
       return JSON.parse(data);
     case 'yaml':
-      return yaml.load(data);
+      return yaml.loadAll(data);
     case 'toml':
       return toml.parse(data);
     case 'ini':
@@ -60,9 +60,14 @@ class Bumper extends Plugin {
         data = '{}';
       }
 
-      const parsed = await parse(data, type);
-      const version = isString(parsed) ? parsed.trim() : get(parsed, path);
-      return semver.parse(version).toString();
+      let parsed = await parse(data, type);
+      if (!Array.isArray(parsed)) {
+        parsed = [parsed]
+      }
+      return parsed
+        .map(_ => semver.parse(isString(_) ? _.trim() : get(_, path)))
+        .reduce((latest, version) => semver.lt(latest, version) ? version : latest, '0.0.0')
+        .toString()
     }
     return null;
   }
@@ -111,14 +116,16 @@ class Bumper extends Plugin {
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
 
         if (typeof parsed !== 'string') {
-          castArray(path).forEach(path => set(parsed, path, version));
+          const arr = Array.isArray(parsed) ? parsed : [parsed]
+          const cast = castArray(path)
+          arr.forEach(parsed => cast.forEach(path => set(parsed, path, version)));
         }
 
         switch (type) {
           case 'json':
             return writeFileSync(file, JSON.stringify(parsed, null, indent) + '\n');
           case 'yaml':
-            return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
+            return writeFileSync(file, parsed.map(_ => yaml.dump(_, { indent: indent.length })).join('---\n'));
           case 'toml':
             return writeFileSync(file, toml.stringify(parsed));
           case 'ini':
