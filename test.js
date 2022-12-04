@@ -5,7 +5,7 @@ import { EOL } from 'os';
 import assert from 'assert';
 import mock from 'mock-fs';
 import Bumper from './index.js';
-import { factory, runTasks } from 'release-it/test/util';
+import { factory, runTasks } from 'release-it/test/util/index.js';
 
 mock({
   './bower.json': JSON.stringify({ version: '1.0.0' }) + EOL,
