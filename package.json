@@ -42,11 +42,11 @@
   "devDependencies": {
     "bron": "^2.0.3",
     "mock-fs": "^5.1.2",
-    "release-it": "^15.0.0-esm.4",
+    "release-it": "^15.2.0",
     "sinon": "^13.0.2"
   },
   "peerDependencies": {
-    "release-it": "^15.0.0-esm.4"
+    "release-it": "^15.2.0"
   },
   "engines": {
     "node": ">=14"
