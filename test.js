@@ -18,7 +18,8 @@ mock({
   './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`,
   './VERSION': `v1.0.0${EOL}`,
   './README.md': `Release v1.0.0${EOL}`,
-  './foo.yaml': `version: v1.0.0${EOL}`
+  './foo.yaml': `version: v1.0.0${EOL}`,
+  './invalid.toml': `/# -*- some invalid toml -*-${EOL}version = "1.0.0"${EOL}`
 });
 
 const namespace = 'bumper';
@@ -241,4 +242,18 @@ test('should not write in dry run', async () => {
   });
   await plugin.bump('1.0.1');
   assert.equal(readFile('./dryrun.json'), `{"version":"1.0.0"}${EOL}`);
+});
+
+test.only('should give precedence to mime type over file extension', async () => {
+  const options = {
+    [namespace]: {
+      out: {
+        file: './invalid.toml',
+        type: 'text/plain'
+      }
+    }
+  };
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./invalid.toml'), `/# -*- some invalid toml -*-${EOL}version = "1.0.1"${EOL}`);
 });

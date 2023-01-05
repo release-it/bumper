@@ -14,6 +14,23 @@ import { Plugin } from 'release-it';
 const noop = Promise.resolve();
 const isString = a => typeof a === 'string';
 
+const mimeTypesMap = {
+  'application/json': 'json',
+  'text/yaml': 'yaml',
+  'application/x-yaml': 'yaml',
+  'text/toml': 'toml',
+  'application/toml': 'toml',
+  'text/x-properties': 'ini'
+};
+
+const extensionsMap = {
+  json: 'json',
+  yml: 'yaml',
+  yaml: 'yaml',
+  toml: 'toml',
+  ini: 'ini'
+};
+
 const parseFileOption = option => {
   const file = isString(option) ? option : option.file;
   const mimeType = typeof option !== 'string' ? option.type : null;
@@ -22,12 +39,9 @@ const parseFileOption = option => {
 };
 
 const getFileType = (file, mimeType) => {
+  if (mimeType) return mimeTypesMap[mimeType] || 'text';
   const ext = file.split('.').pop();
-  if (['application/json'].includes(mimeType) || ext === 'json') return 'json';
-  if (['text/yaml', 'application/x-yaml'].includes(mimeType) || ['yml', 'yaml'].includes(ext)) return 'yaml';
-  if (['application/toml', 'text/toml'].includes(mimeType) || ext === 'toml') return 'toml';
-  if (['text/x-properties'].includes(mimeType) || ext === 'ini') return 'ini';
-  return 'text';
+  return extensionsMap[ext] || 'text';
 };
 
 const parse = async (data, type) => {

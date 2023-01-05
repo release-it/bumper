@@ -26,11 +26,15 @@ it exists) in release-it to determine the latest version.
 
 The supported file types are:
 
-- `*.json` (or explicitly provide the `application/json` type)
-- `*.yaml` and `*.yml` (or explicitly provide `text/yaml` or `application-x-yaml` for `type`)
-- `*.toml` (or set `application/toml` or `text/toml` for `type`)
-- `*.ini` for INI files (or set `text/x-properties` mime `type`)
-- `*.txt` for text files (or set any `text/*` mime `type`)
+| Type | Extension(s)      | Mime-type                           |
+| ---- | ----------------- | ----------------------------------- |
+| JSON | `.json`           | `application/json`                  |
+| YAML | `.yaml` or `.yml` | `text/yaml` or `application-x-yaml` |
+| TOML | `.toml`           | `text/toml` or `application/toml`   |
+| INI  | `.ini`            | `text/x-properties`                 |
+| TEXT | `.txt`            | `text/*`                            |
+
+Explicitly providing the (mime) `type` takes precedence over the file extension.
 
 The fallback type is `text` if the file extension and/or `type` is not known (e.g. `index.php`).
 
