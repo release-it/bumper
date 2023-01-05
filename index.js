@@ -12,7 +12,7 @@ import semver from 'semver';
 import { Plugin } from 'release-it';
 
 const noop = Promise.resolve();
-const isString = a => typeof a === 'string';
+const isString = value => typeof value === 'string';
 
 const mimeTypesMap = {
   'application/json': 'json',
@@ -102,7 +102,9 @@ class Bumper extends Plugin {
             file
           }))
         );
-      } else options.push(option);
+      } else {
+        options.push(option);
+      }
     }
 
     return Promise.all(
