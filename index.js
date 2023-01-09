@@ -1,9 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { EOL } from 'os';
 import glob from 'fast-glob';
-import get from 'lodash.get';
-import set from 'lodash.set';
-import castArray from 'lodash.castarray';
+import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';
 import yaml from 'js-yaml';
 import toml from '@iarna/toml';
