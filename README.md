@@ -24,6 +24,10 @@ In [release-it](https://github.com/release-it/release-it) config:
 The `version` from the `in` file will take precedence over the latest Git tag (and the `version` from `package.json` if
 it exists) in release-it to determine the latest version.
 
+Note that using `package.json` as `out` file may conflict with the npm plugin in release-it. Remove it from the `out`
+file(s), or use
+[`--npm.allowSameVersion`](https://github.com/release-it/release-it/blob/master/docs/npm.md#extra-arguments).
+
 The supported file types are:
 
 | Type | Extension(s)      | Mime-type                           |
