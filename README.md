@@ -106,3 +106,18 @@ The `path` option (default: `"version"`) can be used to change a different prope
 ```
 
 Multiple paths can be provided using an array.
+
+## Command-line
+
+Options for this plugin can be set from the command line. Some examples:
+
+```
+release-it --plugins.@release-it/bumper.in=composer.json
+release-it --plugins.@release-it/bumper.out=composer.json --plugins.@release-it/bumper.out=manifest.json
+```
+
+- Keys are separated by dots.
+- Values can be negated by prefixing the key with `no-`.
+- Arguments may need to be single-quoted (`'`) such as `--'deep.key=value'` or `'--deep.key=value'`
+
+Depending on your shell or OS this may differ.
