@@ -45,14 +45,14 @@
   "devDependencies": {
     "bron": "^2.0.3",
     "mock-fs": "5.2.0",
-    "release-it": "^15.2.0",
+    "release-it": "^16.0.0",
     "sinon": "^15.2.0"
   },
   "peerDependencies": {
-    "release-it": "^15.2.0"
+    "release-it": "^16.0.0"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "release-it": {
     "hooks": {
