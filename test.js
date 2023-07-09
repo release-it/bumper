@@ -244,7 +244,7 @@ test('should not write in dry run', async () => {
   assert.equal(readFile('./dryrun.json'), `{"version":"1.0.0"}${EOL}`);
 });
 
-test.only('should give precedence to mime type over file extension', async () => {
+test('should give precedence to mime type over file extension', async () => {
   const options = {
     [namespace]: {
       out: {
