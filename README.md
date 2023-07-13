@@ -70,6 +70,26 @@ To replace all occurences of the current version with the new version in any tex
 }
 ```
 
+:warning: the operation is a search-and-replace; if the current version is not found in the file, the new version cannot be written out.
+
+To instead always consume the entire file, that is, the whole and only content of the file is the version number, set `consumeWholeFile: true` for the `out` option:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "VERSION",
+      "type": "text/plain",
+      "consumeWholeFile": true
+    }
+  }
+}
+```
+
+The version number is then written to the output file, overwriting it completely instead of a search-and-replace.
+
+:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.1` in the output file.
+
 The `out` option can also be an array of files:
 
 ```json
