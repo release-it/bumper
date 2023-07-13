@@ -17,6 +17,8 @@ mock({
   './foo.toml': `[tool.test]${EOL}version = "1.0.0"${EOL}`,
   './foo.ini': `path.version=1.0.0${EOL}path.name=fake${EOL}`,
   './VERSION': `v1.0.0${EOL}`,
+  './VERSION-OLD': `v0.9.0${EOL}`,
+  './VERSION-OLD2': `v0.9.0${EOL}`,
   './README.md': `Release v1.0.0${EOL}`,
   './foo.yaml': `version: v1.0.0${EOL}`,
   './invalid.toml': `/# -*- some invalid toml -*-${EOL}version = "1.0.0"${EOL}`
@@ -256,4 +258,69 @@ test('should give precedence to mime type over file extension', async () => {
   const plugin = factory(Bumper, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./invalid.toml'), `/# -*- some invalid toml -*-${EOL}version = "1.0.1"${EOL}`);
+});
+
+test('should read from plain text file, overwrite out-of-date plain version text file, completely', async () => {
+  const options = {
+    [namespace]: {
+      in: { file: 'VERSION', type: 'text/plain' },
+      out: [
+        {
+          file: './VERSION-OLD',
+          type: 'text/plain',
+          consumeWholeFile: true
+        },
+        {
+          file: './VERSION',
+          type: 'text/plain'
+        }
+      ] }
+  };
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./VERSION'), `v1.0.1${EOL}`);
+  assert.equal(readFile('./VERSION-OLD'), `1.0.1${EOL}`);
+});
+
+test('should read from plain text file, not update out-of-date plain version text file', async () => {
+  const options = {
+    [namespace]: {
+      in: { file: 'VERSION', type: 'text/plain' },
+      out: [
+        {
+          file: './VERSION-OLD2',
+          type: 'text/plain',
+          consumeWholeFile: false
+        },
+        {
+          file: './VERSION',
+          type: 'text/plain'
+        }
+      ] }
+  };
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./VERSION'), `v1.0.1${EOL}`);
+  assert.equal(readFile('./VERSION-OLD2'), `v0.9.0${EOL}`);
+});
+
+test('should read from plain text file, not update out-of-date plain version text file (default implied)', async () => {
+  const options = {
+    [namespace]: {
+      in: { file: 'VERSION', type: 'text/plain' },
+      out: [
+        {
+          file: './VERSION-OLD2',
+          type: 'text/plain'
+        },
+        {
+          file: './VERSION',
+          type: 'text/plain'
+        }
+      ] }
+  };
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./VERSION'), `v1.0.1${EOL}`);
+  assert.equal(readFile('./VERSION-OLD2'), `v0.9.0${EOL}`);
 });
