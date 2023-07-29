@@ -75,7 +75,8 @@ class Bumper extends Plugin {
 
       const parsed = await parse(data, type);
       const version = isString(parsed) ? parsed.trim() : get(parsed, path);
-      return semver.parse(version).toString();
+      const parsedVersion = semver.parse(version);
+      return parsedVersion ? parsedVersion.toString() : null;
     }
     return null;
   }
