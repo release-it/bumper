@@ -33,7 +33,8 @@ const parseFileOption = option => {
   const file = isString(option) ? option : option.file;
   const mimeType = typeof option !== 'string' ? option.type : null;
   const path = (typeof option !== 'string' && option.path) || 'version';
-  return { file, mimeType, path };
+  const consumeWholeFile = typeof option !== 'string' ? option.consumeWholeFile : false;
+  return { file, mimeType, path, consumeWholeFile };
 };
 
 const getFileType = (file, mimeType) => {
@@ -61,7 +62,7 @@ class Bumper extends Plugin {
   async getLatestVersion() {
     const { in: option } = this.options;
     if (!option) return;
-    const { file, mimeType, path } = parseFileOption(option);
+    const { file, mimeType, path, consumeWholeFile } = parseFileOption(option);
     if (file) {
       const type = getFileType(file, mimeType);
       let data;
@@ -107,7 +108,7 @@ class Bumper extends Plugin {
 
     return Promise.all(
       options.map(async out => {
-        const { file, mimeType, path } = parseFileOption(out);
+        const { file, mimeType, path, consumeWholeFile } = parseFileOption(out);
         this.log.exec(`Writing version to ${file}`, isDryRun);
         if (isDryRun) return noop;
 
@@ -139,7 +140,7 @@ class Bumper extends Plugin {
             return writeFileSync(file, ini.encode(parsed));
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');
-            const write = parsed ? parsed.replace(versionMatch, version) : version + EOL;
+            const write = (parsed && !consumeWholeFile) ? parsed.replace(versionMatch, version) : version + EOL;
             return writeFileSync(file, write);
         }
       })
