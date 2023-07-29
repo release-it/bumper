@@ -55,6 +55,13 @@
   "release-it": {
     "hooks": {
       "before:init": "npm test"
+    },
+    "github": {
+      "tokenRef": "GITHUB_TOKEN_RELEASE_IT",
+      "release": true,
+      "comments": {
+        "submit": true
+      }
     }
   }
 }
