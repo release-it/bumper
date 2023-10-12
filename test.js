@@ -324,3 +324,19 @@ test('should read from plain text file, not update out-of-date plain version tex
   assert.equal(readFile('./VERSION'), `v1.0.1${EOL}`);
   assert.equal(readFile('./VERSION-OLD2'), `v0.9.0${EOL}`);
 });
+
+test('should update version in JSON file with prefix', async () => {
+  const options = {
+    [namespace]: {
+      out: {
+        file: './bower.json',
+        path: 'version',
+        versionPrefix: '^'
+      }
+    }
+  };
+
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(readFile('./bower.json'), '{\n  "version": "^1.0.1"\n}\n');
+});
