@@ -127,6 +127,22 @@ The `path` option (default: `"version"`) can be used to change a different prope
 
 Multiple paths can be provided using an array.
 
+The `versionPrefix` option (default: `''`) can be used in cases where you'd like to maintain a specific prefix for your version number (for example, in `package.json` where you might want versions like `^1.0.0`). This will prepend the specified prefix to the bumped version:
+
+``` json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "package.json",
+      "path": "version",
+      "prefix": "^"
+    }
+  }
+}
+```
+
+With the above configuration, if release-it determines the new version to be `1.0.0`, it'll be saved as `^1.0.0` in the targeted file.
+
 ## Command-line
 
 Options for this plugin can be set from the command line. Some examples:

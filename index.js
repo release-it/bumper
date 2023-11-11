@@ -34,7 +34,8 @@ const parseFileOption = option => {
   const mimeType = typeof option !== 'string' ? option.type : null;
   const path = (typeof option !== 'string' && option.path) || 'version';
   const consumeWholeFile = typeof option !== 'string' ? option.consumeWholeFile : false;
-  return { file, mimeType, path, consumeWholeFile };
+  const versionPrefix = typeof option !== 'string' ? option.versionPrefix : null;
+  return { file, mimeType, path, consumeWholeFile, versionPrefix };
 };
 
 const getFileType = (file, mimeType) => {
@@ -109,7 +110,7 @@ class Bumper extends Plugin {
 
     return Promise.all(
       options.map(async out => {
-        const { file, mimeType, path, consumeWholeFile } = parseFileOption(out);
+        const { file, mimeType, path, consumeWholeFile, versionPrefix = '' } = parseFileOption(out);
         this.log.exec(`Writing version to ${file}`, isDryRun);
         if (isDryRun) return noop;
 
@@ -127,7 +128,7 @@ class Bumper extends Plugin {
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
 
         if (typeof parsed !== 'string') {
-          castArray(path).forEach(path => set(parsed, path, version));
+          castArray(path).forEach(path => set(parsed, path, versionPrefix + version));
         }
 
         switch (type) {
