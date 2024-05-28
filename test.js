@@ -21,7 +21,8 @@ mock({
   './VERSION-OLD2': `v0.9.0${EOL}`,
   './README.md': `Release v1.0.0${EOL}`,
   './foo.yaml': `version: v1.0.0${EOL}`,
-  './invalid.toml': `/# -*- some invalid toml -*-${EOL}version = "1.0.0"${EOL}`
+  './invalid.toml': `/# -*- some invalid toml -*-${EOL}version = "1.0.0"${EOL}`,
+  './wp-plugin.php': `<?php${EOL}/**${EOL}* Plugin Name: WP plugin${EOL}* Version: 1.0.0${EOL}*/${EOL}<? echo <p>hello world</p>; ?>${EOL}`
 });
 
 const namespace = 'bumper';
@@ -339,4 +340,22 @@ test('should update version in JSON file with prefix', async () => {
   const plugin = factory(Bumper, { namespace, options });
   await runTasks(plugin);
   assert.equal(readFile('./bower.json'), '{\n  "version": "^1.0.1"\n}\n');
+});
+
+test('should update version php plugin by regex', async () => {
+  const options = {
+    [namespace]: {
+      out: {
+        file: './wp-plugin.php',
+        pattern: '(\\* Version: )(\\d+(\\.\\d+){1,})'
+      }
+    }
+  };
+
+  const plugin = factory(Bumper, { namespace, options });
+  await runTasks(plugin);
+  assert.equal(
+    readFile('./wp-plugin.php'),
+    `<?php\n/**\n* Plugin Name: WP plugin\n* Version: 1.0.1\n*/\n<? echo <p>hello world</p>; ?>\n`
+  );
 });
