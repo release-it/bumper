@@ -143,6 +143,20 @@ The `versionPrefix` option (default: `''`) can be used in cases where you'd like
 
 With the above configuration, if release-it determines the new version to be `1.0.0`, it'll be saved as `^1.0.0` in the targeted file.
 
+For less structured files like text or php files, you can use `pattern` to replace the version number. The `pattern` is a regular expression that should match the version number. The first capturing group should match the version number. The `pattern` option only works for files with `type: text/*`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "file.php",
+      "type": "text/php",
+      "pattern": "(\\* Version: )(\\d+(\\.\\d+){1,})"
+    }
+  }
+}
+```
+
 ## Command-line
 
 Options for this plugin can be set from the command line. Some examples:
