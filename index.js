@@ -35,7 +35,8 @@ const parseFileOption = option => {
   const path = (typeof option !== 'string' && option.path) || 'version';
   const consumeWholeFile = typeof option !== 'string' ? option.consumeWholeFile : false;
   const versionPrefix = typeof option !== 'string' ? option.versionPrefix : null;
-  return { file, mimeType, path, consumeWholeFile, versionPrefix };
+  const pattern = typeof option !== 'string' ? option.pattern : null;
+  return { file, mimeType, path, consumeWholeFile, versionPrefix, pattern };
 };
 
 const getFileType = (file, mimeType) => {
@@ -110,7 +111,7 @@ class Bumper extends Plugin {
 
     return Promise.all(
       options.map(async out => {
-        const { file, mimeType, path, consumeWholeFile, versionPrefix = '' } = parseFileOption(out);
+        const { file, mimeType, path, consumeWholeFile, versionPrefix = '', pattern } = parseFileOption(out);
         this.log.exec(`Writing version to ${file}`, isDryRun);
         if (isDryRun) return noop;
 
@@ -141,9 +142,15 @@ class Bumper extends Plugin {
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
           default:
-            const versionMatch = new RegExp(latestVersion || '', 'g');
-            const write = (parsed && !consumeWholeFile) ? parsed.replace(versionMatch, version) : version + EOL;
-            return writeFileSync(file, write);
+            if (pattern)  {
+             const regex = new RegExp(pattern);
+             const write = (parsed && !consumeWholeFile) ? parsed.replace(regex, `$1${version}`) : version + EOL;
+             return writeFileSync(file, write);
+            } else { 
+              const versionMatch = new RegExp(latestVersion || '', 'g');
+              const write = (parsed && !consumeWholeFile) ? parsed.replace(versionMatch, version) : version + EOL;
+              return writeFileSync(file, write);
+            }
         }
       })
     );
