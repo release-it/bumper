@@ -3,9 +3,12 @@ import { EOL } from 'os';
 import glob from 'fast-glob';
 import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';
+import { detectNewline } from 'detect-newline';
 import yaml from 'js-yaml';
 import toml from '@iarna/toml';
 import ini from 'ini';
+import jsdom from 'jsdom';
+import serialize from 'w3c-xmlserializer';
 import semver from 'semver';
 import { Plugin } from 'release-it';
 
@@ -14,11 +17,15 @@ const isString = value => typeof value === 'string';
 
 const mimeTypesMap = {
   'application/json': 'json',
-  'text/yaml': 'yaml',
+  'application/yaml': 'yaml',
   'application/x-yaml': 'yaml',
-  'text/toml': 'toml',
+  'text/yaml': 'yaml',
   'application/toml': 'toml',
-  'text/x-properties': 'ini'
+  'text/toml': 'toml',
+  'text/x-properties': 'ini',
+  'application/xml': 'xml',
+  'text/xml': 'xml',
+  'text/html': 'html'
 };
 
 const extensionsMap = {
@@ -26,7 +33,9 @@ const extensionsMap = {
   yml: 'yaml',
   yaml: 'yaml',
   toml: 'toml',
-  ini: 'ini'
+  ini: 'ini',
+  xml: 'xml',
+  html: 'html'
 };
 
 const parseFileOption = option => {
@@ -54,7 +63,12 @@ const parse = async (data, type) => {
       return toml.parse(data);
     case 'ini':
       return ini.parse(data);
-    default:
+    case 'xml':
+    case 'html':
+      const dom = new jsdom.JSDOM('');
+      const doc = new dom.window.DOMParser();
+      return doc.parseFromString(data, 'application/xml');
+    default: // text
       return (data || '').toString();
   }
 };
@@ -75,7 +89,34 @@ class Bumper extends Plugin {
       }
 
       const parsed = await parse(data, type);
-      const version = isString(parsed) ? parsed.trim() : get(parsed, path);
+
+      let version = undefined;
+      switch (type) {
+        case 'json':
+        case 'yaml':
+        case 'toml':
+          version = get(parsed, path);
+          break;
+        case 'ini':
+          const pathProperties = path.split(' ');
+          if (pathProperties.length > 1) {
+            version = parsed[pathProperties[0]][pathProperties[1]];
+          } else {
+            version = parsed[path];
+          }
+          break;
+        case 'xml':
+        case 'html':
+          const element = parsed.querySelector(path);
+          if (!element) {
+            throw new Error(`Failed to find the element with the provided selector: ${path}`);
+          }
+          version = element.textContent;
+          break;
+        default: // text
+          version = parsed.trim();
+      }
+
       const parsedVersion = semver.parse(version);
       return parsedVersion ? parsedVersion.toString() : null;
     }
@@ -126,8 +167,9 @@ class Bumper extends Plugin {
 
         const parsed = await parse(data, type);
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
+        const newline = isString(data) ? detectNewline(data) || EOL : null;
 
-        if (typeof parsed !== 'string') {
+        if (typeof parsed !== 'string' || typeof parsed !== 'xml') {
           castArray(path).forEach(path => set(parsed, path, versionPrefix + version));
         }
 
@@ -137,12 +179,41 @@ class Bumper extends Plugin {
           case 'yaml':
             return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
           case 'toml':
-            return writeFileSync(file, toml.stringify(parsed));
+            const tomlString = toml.stringify(parsed);
+            // handle empty objects for sections
+            const tomlContent = tomlString.replace(/^([a-zA-Z0-9\.\-]+) \= \{ \}/g, '[$1]');
+            return writeFileSync(file, tomlContent);
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
+          case 'xml':
+            const xmlElement = parsed.querySelector(path);
+            if (!xmlElement) {
+              throw new Error(`Failed to find the element with the provided selector: ${path}`);
+            }
+
+            xmlElement.textContent = version;
+
+            const xml = serialize(parsed);
+
+            const CRLF = '\r\n';
+            if (newline === CRLF) {
+              return writeFileSync(file, xml.replace(/\n/g, CRLF) + CRLF);
+            }
+
+            return writeFileSync(file, xml + '\n');
+          case 'html':
+            const htmlElement = parsed.querySelector(path);
+            if (!htmlElement) {
+              throw new Error(`Failed to find the element with the provided selector: ${path}`);
+            }
+
+            const previousContents = htmlElement.outerHTML;
+            htmlElement.textContent = version;
+            const html = data.replace(previousContents.trim(), htmlElement.outerHTML.trim());
+            return writeFileSync(file, html);
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');
-            const write = (parsed && !consumeWholeFile) ? parsed.replace(versionMatch, version) : version + EOL;
+            const write = parsed && !consumeWholeFile ? parsed.replace(versionMatch, version) : version + EOL;
             return writeFileSync(file, write);
         }
       })

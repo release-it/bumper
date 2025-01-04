@@ -8,7 +8,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "test": "bron test.js",
+    "test": "node --test test",
     "release": "release-it"
   },
   "keywords": [
@@ -23,28 +23,29 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/release-it/bumper.git"
+    "url": "git+https://github.com/release-it/bumper.git"
   },
   "homepage": "https://github.com/release-it/bumper#readme",
-  "bugs": "https://github.com/release-it/bumper/issues",
-  "author": {
-    "email": "lars@webpro.nl",
-    "name": "Lars Kappert"
+  "bugs": {
+    "url": "https://github.com/release-it/bumper/issues"
   },
+  "author": "Lars Kappert <lars@webpro.nl>",
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
+    "@iarna/toml": "^3.0.0",
     "detect-indent": "7.0.1",
+    "detect-newline": "4.0.1",
     "fast-glob": "^3.3.2",
-    "ini": "^4.1.1",
+    "ini": "^5.0.0",
     "js-yaml": "^4.1.0",
+    "jsdom": "^25.0.1",
     "lodash-es": "^4.17.21",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "w3c-xmlserializer": "^5.0.0"
   },
   "devDependencies": {
-    "bron": "^2.0.3",
-    "mock-fs": "5.2.0",
+    "mock-fs": "5.4.1",
     "release-it": "^17.0.0",
-    "sinon": "^15.2.0"
+    "sinon": "^19.0.2"
   },
   "peerDependencies": {
     "release-it": "^17.0.0"
@@ -63,5 +64,6 @@
         "submit": true
       }
     }
-  }
+  },
+  "main": "index.js"
 }
