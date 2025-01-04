@@ -95,15 +95,8 @@ class Bumper extends Plugin {
         case 'json':
         case 'yaml':
         case 'toml':
-          version = get(parsed, path);
-          break;
         case 'ini':
-          const pathProperties = path.split(' ');
-          if (pathProperties.length > 1) {
-            version = parsed[pathProperties[0]][pathProperties[1]];
-          } else {
-            version = parsed[path];
-          }
+          version = get(parsed, path);
           break;
         case 'xml':
         case 'html':

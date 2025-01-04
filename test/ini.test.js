@@ -11,7 +11,7 @@ import { readFile } from './globals/file-utils.js';
 mock({
   './.foo': `path.version=${CURRENT_VERSION}${EOL}path.name=fake${EOL}`,
   './foo.ini': `path.version=${CURRENT_VERSION}${EOL}path.name=fake${EOL}`,
-  './section.ini': `[db]${EOL}user=root${EOL}[section]${EOL}path.version=${CURRENT_VERSION}${EOL}path.name=fake${EOL}`
+  './section.ini': `[db]${EOL}user=root${EOL}${EOL}[section]${EOL}version=${CURRENT_VERSION}${EOL}name=fake${EOL}`
 });
 
 describe('ini file', { concurrency: true }, () => {
@@ -35,7 +35,7 @@ describe('ini file', { concurrency: true }, () => {
 
   it('should return latest version from section', async () => {
     const options = {
-      [NAMESPACE]: { in: { file: './section.ini', path: 'section path.version' } }
+      [NAMESPACE]: { in: { file: './section.ini', path: 'section.version' } }
     };
     const plugin = factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
@@ -82,5 +82,17 @@ describe('ini file', { concurrency: true }, () => {
     const plugin = factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.ini'), `path.version=${NEW_VERSION}${EOL}path.name=fake${EOL}`);
+  });
+
+  it('should read/write with section', async () => {
+    const options = {
+      [NAMESPACE]: {
+        in: { file: './section.ini', path: 'section.version' },
+        out: { file: './section.ini', path: 'section.version' }
+      }
+    };
+    const plugin = factory(Bumper, { NAMESPACE, options });
+    await runTasks(plugin);
+    assert.equal(readFile('./section.ini'), `[db]${EOL}user=root${EOL}${EOL}[section]${EOL}version=${NEW_VERSION}${EOL}name=fake${EOL}`);
   });
 });
