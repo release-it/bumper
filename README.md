@@ -37,6 +37,7 @@ The supported file types are:
 | TOML | `.toml`           | `text/toml` or `application/toml`   |
 | INI  | `.ini`            | `text/x-properties`                 |
 | XML  | `.xml`            | `text/xml` or `application/xml`     |
+| HTML | `.html`           | `text/html`                         |
 | TEXT | `.txt`            | `text/*`                            |
 
 Explicitly providing the (mime) `type` takes precedence over the file extension.
@@ -89,7 +90,7 @@ To instead always consume the entire file, that is, the whole and only content o
 
 The version number is then written to the output file, overwriting it completely instead of a search-and-replace.
 
-:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.0` in the output file.
+:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.1` in the output file.
 
 The `out` option can also be an array of files:
 
@@ -136,6 +137,21 @@ The `path` option (default: `"version"`) can be used to change a different prope
       "file": "pom.xml",
       "path": "project > version",
       "type": "application/xml"
+    }
+  }
+}
+```
+
+> For the `html` type, the `path` option must be in the form of a unique [css selector](https://www.w3.org/TR/selectors-4/#overview). The following example will set the
+element text content with the css attribute `#version` to the new version in `foo.html`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "foo.html",
+      "path": "#version",
+      "type": "text/html"
     }
   }
 }
