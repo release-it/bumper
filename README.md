@@ -89,7 +89,7 @@ To instead always consume the entire file, that is, the whole and only content o
 
 The version number is then written to the output file, overwriting it completely instead of a search-and-replace.
 
-:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.9` in the output file.
+:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.0` in the output file.
 
 The `out` option can also be an array of files:
 
@@ -143,7 +143,7 @@ The `path` option (default: `"version"`) can be used to change a different prope
 
 Multiple paths can be provided using an array.
 
-The `versionPrefix` option (default: `''`) can be used in cases where you'd like to maintain a specific prefix for your version number (for example, in `package.json` where you might want versions like `^1.0.9`). This will prepend the specified prefix to the bumped version:
+The `versionPrefix` option (default: `''`) can be used in cases where you'd like to maintain a specific prefix for your version number (for example, in `package.json` where you might want versions like `^1.0.0`). This will prepend the specified prefix to the bumped version:
 
 ``` json
 "plugins": {
@@ -157,7 +157,7 @@ The `versionPrefix` option (default: `''`) can be used in cases where you'd like
 }
 ```
 
-With the above configuration, if release-it determines the new version to be `1.0.9`, it'll be saved as `^1.0.9` in the targeted file.
+With the above configuration, if release-it determines the new version to be `1.0.0`, it'll be saved as `^1.0.0` in the targeted file.
 
 ## Command-line
 
