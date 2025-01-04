@@ -25,7 +25,8 @@ const mimeTypesMap = {
   'text/x-properties': 'ini',
   'application/xml': 'xml',
   'text/xml': 'xml',
-  'text/html': 'html'
+  'text/html': 'html',
+  'text/plain': 'text'
 };
 
 const extensionsMap = {
@@ -35,7 +36,8 @@ const extensionsMap = {
   toml: 'toml',
   ini: 'ini',
   xml: 'xml',
-  html: 'html'
+  html: 'html',
+  txt: 'text'
 };
 
 const parseFileOption = option => {
