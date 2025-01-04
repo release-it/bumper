@@ -169,7 +169,7 @@ class Bumper extends Plugin {
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
         const newline = isString(data) ? detectNewline(data) || EOL : null;
 
-        if (typeof parsed !== 'string' || typeof parsed !== 'xml') {
+        if (typeof parsed !== 'string') {
           castArray(path).forEach(path => set(parsed, path, versionPrefix + version));
         }
 
