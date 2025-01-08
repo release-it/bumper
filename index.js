@@ -3,14 +3,12 @@ import { EOL } from 'os';
 import glob from 'fast-glob';
 import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';
-import { detectNewline } from 'detect-newline';
 import yaml from 'js-yaml';
 import toml from '@iarna/toml';
 import ini from 'ini';
-import jsdom from 'jsdom';
-import serialize from 'w3c-xmlserializer';
 import semver from 'semver';
 import { Plugin } from 'release-it';
+import * as cheerio from 'cheerio';
 
 const noop = Promise.resolve();
 const isString = value => typeof value === 'string';
@@ -57,12 +55,6 @@ const getFileType = (file, mimeType) => {
   return extensionsMap[ext] || 'text';
 };
 
-const parseDOM = (data, mimeType) => {
-  const dom = new jsdom.JSDOM('');
-  const doc = new dom.window.DOMParser();
-  return doc.parseFromString(data, mimeType);
-}
-
 const parse = async (data, type) => {
   switch (type) {
     case 'json':
@@ -74,9 +66,9 @@ const parse = async (data, type) => {
     case 'ini':
       return ini.parse(data);
     case 'xml':
-      return parseDOM(data, 'application/xml');
+      return cheerio.load(data, { xmlMode: true });
     case 'html':
-      return parseDOM(data, 'text/html');
+      return cheerio.load(data);
     default: // text
       return (data || '').toString();
   }
@@ -109,11 +101,11 @@ class Bumper extends Plugin {
           break;
         case 'xml':
         case 'html':
-          const element = parsed.querySelector(path);
+          const element = parsed(path);
           if (!element) {
             throw new Error(`Failed to find the element with the provided selector: ${path}`);
           }
-          version = element.textContent;
+          version = element.text();
           break;
         default: // text
           version = parsed.trim();
@@ -169,7 +161,6 @@ class Bumper extends Plugin {
 
         const parsed = await parse(data, type);
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
-        const newline = isString(data) ? detectNewline(data) || EOL : null;
 
         if (typeof parsed !== 'string') {
           castArray(path).forEach(path => set(parsed, path, versionPrefix + version));
@@ -188,30 +179,23 @@ class Bumper extends Plugin {
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
           case 'xml':
-            const xmlElement = parsed.querySelector(path);
+            const xmlElement = parsed(path);
             if (!xmlElement) {
               throw new Error(`Failed to find the element with the provided selector: ${path}`);
             }
 
-            xmlElement.textContent = version;
-
-            const xml = serialize(parsed);
-
-            const CRLF = '\r\n';
-            if (newline === CRLF) {
-              return writeFileSync(file, xml.replace(/\n/g, CRLF) + CRLF);
-            }
-
-            return writeFileSync(file, xml + '\n');
+            xmlElement.text(version);
+            return writeFileSync(file, parsed.xml());
           case 'html':
-            const htmlElement = parsed.querySelector(path);
+            const htmlElement = parsed(path);
             if (!htmlElement) {
               throw new Error(`Failed to find the element with the provided selector: ${path}`);
             }
 
-            const previousContents = htmlElement.outerHTML;
-            htmlElement.textContent = version;
-            const html = data.replace(previousContents.trim(), htmlElement.outerHTML.trim());
+            // We are taking this approach as cheerio will modify the original html doc type and head formatting if we just used the parsed.html() function.
+            const previousContents = htmlElement.prop('outerHTML');
+            htmlElement.text(version);
+            const html = data.replace(previousContents.trim(), htmlElement.prop('outerHTML').trim());
             return writeFileSync(file, html);
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');

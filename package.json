@@ -32,23 +32,21 @@
   "author": "Lars Kappert <lars@webpro.nl>",
   "dependencies": {
     "@iarna/toml": "^3.0.0",
+    "cheerio": "^1.0.0",
     "detect-indent": "7.0.1",
-    "detect-newline": "4.0.1",
-    "fast-glob": "^3.3.2",
+    "fast-glob": "^3.3.3",
     "ini": "^5.0.0",
     "js-yaml": "^4.1.0",
-    "jsdom": "^25.0.1",
     "lodash-es": "^4.17.21",
-    "semver": "^7.3.7",
-    "w3c-xmlserializer": "^5.0.0"
+    "semver": "^7.3.7"
   },
   "devDependencies": {
     "mock-fs": "5.4.1",
-    "release-it": "^17.0.0",
+    "release-it": "^18.0.0",
     "sinon": "^19.0.2"
   },
   "peerDependencies": {
-    "release-it": "^17.0.0"
+    "release-it": "^18.0.0"
   },
   "engines": {
     "node": ">=18"
