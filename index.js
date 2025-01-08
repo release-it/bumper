@@ -25,6 +25,7 @@ const mimeTypesMap = {
   'text/x-properties': 'ini',
   'application/xml': 'xml',
   'text/xml': 'xml',
+  'application/xhtml+xml': 'html',
   'text/html': 'html',
   'text/plain': 'text'
 };
@@ -37,6 +38,7 @@ const extensionsMap = {
   ini: 'ini',
   xml: 'xml',
   html: 'html',
+  xhtml: 'html',
   txt: 'text'
 };
 
@@ -55,6 +57,12 @@ const getFileType = (file, mimeType) => {
   return extensionsMap[ext] || 'text';
 };
 
+const parseDOM = (data, mimeType) => {
+  const dom = new jsdom.JSDOM('');
+  const doc = new dom.window.DOMParser();
+  return doc.parseFromString(data, mimeType);
+}
+
 const parse = async (data, type) => {
   switch (type) {
     case 'json':
@@ -66,10 +74,9 @@ const parse = async (data, type) => {
     case 'ini':
       return ini.parse(data);
     case 'xml':
+      return parseDOM(data, 'application/xml');
     case 'html':
-      const dom = new jsdom.JSDOM('');
-      const doc = new dom.window.DOMParser();
-      return doc.parseFromString(data, 'application/xml');
+      return parseDOM(data, 'text/html');
     default: // text
       return (data || '').toString();
   }
