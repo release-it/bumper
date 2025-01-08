@@ -8,17 +8,24 @@ import toml from '@iarna/toml';
 import ini from 'ini';
 import semver from 'semver';
 import { Plugin } from 'release-it';
+import * as cheerio from 'cheerio';
 
 const noop = Promise.resolve();
 const isString = value => typeof value === 'string';
 
 const mimeTypesMap = {
   'application/json': 'json',
-  'text/yaml': 'yaml',
+  'application/yaml': 'yaml',
   'application/x-yaml': 'yaml',
-  'text/toml': 'toml',
+  'text/yaml': 'yaml',
   'application/toml': 'toml',
-  'text/x-properties': 'ini'
+  'text/toml': 'toml',
+  'text/x-properties': 'ini',
+  'application/xml': 'xml',
+  'text/xml': 'xml',
+  'application/xhtml+xml': 'html',
+  'text/html': 'html',
+  'text/plain': 'text'
 };
 
 const extensionsMap = {
@@ -26,7 +33,11 @@ const extensionsMap = {
   yml: 'yaml',
   yaml: 'yaml',
   toml: 'toml',
-  ini: 'ini'
+  ini: 'ini',
+  xml: 'xml',
+  html: 'html',
+  xhtml: 'html',
+  txt: 'text'
 };
 
 const parseFileOption = option => {
@@ -54,7 +65,11 @@ const parse = async (data, type) => {
       return toml.parse(data);
     case 'ini':
       return ini.parse(data);
-    default:
+    case 'xml':
+      return cheerio.load(data, { xmlMode: true });
+    case 'html':
+      return cheerio.load(data);
+    default: // text
       return (data || '').toString();
   }
 };
@@ -75,7 +90,27 @@ class Bumper extends Plugin {
       }
 
       const parsed = await parse(data, type);
-      const version = isString(parsed) ? parsed.trim() : get(parsed, path);
+
+      let version = undefined;
+      switch (type) {
+        case 'json':
+        case 'yaml':
+        case 'toml':
+        case 'ini':
+          version = get(parsed, path);
+          break;
+        case 'xml':
+        case 'html':
+          const element = parsed(path);
+          if (!element) {
+            throw new Error(`Failed to find the element with the provided selector: ${path}`);
+          }
+          version = element.text();
+          break;
+        default: // text
+          version = parsed.trim();
+      }
+
       const parsedVersion = semver.parse(version);
       return parsedVersion ? parsedVersion.toString() : null;
     }
@@ -137,12 +172,34 @@ class Bumper extends Plugin {
           case 'yaml':
             return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
           case 'toml':
-            return writeFileSync(file, toml.stringify(parsed));
+            const tomlString = toml.stringify(parsed);
+            // handle empty objects for sections
+            const tomlContent = tomlString.replace(/^([a-zA-Z0-9\.\-]+) \= \{ \}/g, '[$1]');
+            return writeFileSync(file, tomlContent);
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
+          case 'xml':
+            const xmlElement = parsed(path);
+            if (!xmlElement) {
+              throw new Error(`Failed to find the element with the provided selector: ${path}`);
+            }
+
+            xmlElement.text(version);
+            return writeFileSync(file, parsed.xml());
+          case 'html':
+            const htmlElement = parsed(path);
+            if (!htmlElement) {
+              throw new Error(`Failed to find the element with the provided selector: ${path}`);
+            }
+
+            // We are taking this approach as cheerio will modify the original html doc type and head formatting if we just used the parsed.html() function.
+            const previousContents = htmlElement.prop('outerHTML');
+            htmlElement.text(version);
+            const html = data.replace(previousContents.trim(), htmlElement.prop('outerHTML').trim());
+            return writeFileSync(file, html);
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');
-            const write = (parsed && !consumeWholeFile) ? parsed.replace(versionMatch, version) : version + EOL;
+            const write = parsed && !consumeWholeFile ? parsed.replace(versionMatch, version) : version + EOL;
             return writeFileSync(file, write);
         }
       })

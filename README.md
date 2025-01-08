@@ -2,7 +2,7 @@
 
 This plugin reads and/or writes version/manifest files.
 
-```
+```sh
 npm install --save-dev @release-it/bumper
 ```
 
@@ -30,13 +30,15 @@ file(s), or use
 
 The supported file types are:
 
-| Type | Extension(s)      | Mime-type                           |
-| ---- | ----------------- | ----------------------------------- |
-| JSON | `.json`           | `application/json`                  |
-| YAML | `.yaml` or `.yml` | `text/yaml` or `application-x-yaml` |
-| TOML | `.toml`           | `text/toml` or `application/toml`   |
-| INI  | `.ini`            | `text/x-properties`                 |
-| TEXT | `.txt`            | `text/*`                            |
+| Type | Extension(s)      | Mime-type                                                 |
+| ---- | ----------------- | --------------------------------------------------------- |
+| JSON | `.json`           | `application/json`                                        |
+| YAML | `.yaml` or `.yml` | `text/yaml` or `application-x-yaml` or `application/yaml` |
+| TOML | `.toml`           | `text/toml` or `application/toml`                         |
+| INI  | `.ini`            | `text/x-properties`                                       |
+| XML  | `.xml`            | `text/xml` or `application/xml`                           |
+| HTML | `.html`           | `text/html` or `application/xhtml+xml`                    |
+| TEXT | `.txt`            | `text/*`                                                  |
 
 Explicitly providing the (mime) `type` takes precedence over the file extension.
 
@@ -120,6 +122,36 @@ The `path` option (default: `"version"`) can be used to change a different prope
     "out": {
       "file": "manifest.json",
       "path": "current.version"
+    }
+  }
+}
+```
+
+> For the `xml` type, the `path` option must be in the form of a unique [css selector](https://www.w3.org/TR/selectors-4/#overview). The following example will set the
+`project > version` property to the new version in `pom.xml`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "pom.xml",
+      "path": "project > version",
+      "type": "application/xml"
+    }
+  }
+}
+```
+
+> For the `html` type, the `path` option must be in the form of a unique [css selector](https://www.w3.org/TR/selectors-4/#overview). The following example will set the
+element text content with the css attribute `#version` to the new version in `foo.html`:
+
+```json
+"plugins": {
+  "@release-it/bumper": {
+    "out": {
+      "file": "foo.html",
+      "path": "#version",
+      "type": "text/html"
     }
   }
 }
