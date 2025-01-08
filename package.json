@@ -43,7 +43,7 @@
   "devDependencies": {
     "installed-check": "^9.3.0",
     "mock-fs": "5.4.1",
-    "release-it": "^18.0.0",
+    "release-it": "https://pkg.pr.new/release-it@14e578f",
     "sinon": "^19.0.2"
   },
   "peerDependencies": {
@@ -59,6 +59,12 @@
     "github": {
       "tokenRef": "GITHUB_TOKEN_RELEASE_IT",
       "release": true,
+      "releaseNotes": {
+        "commit": "* ${commit.message} (${sha}){ - thanks @${author.login}!}",
+        "excludeMatches": [
+          "webpro"
+        ]
+      },
       "comments": {
         "submit": true
       }
