@@ -86,6 +86,6 @@ describe('json file', { concurrency: true }, () => {
 
     const plugin = factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
-    assert.equal(readFile('./bower.json'), '{\n  "version": "^' + NEW_VERSION + '"\n}\n');
+    assert.equal(readFile('./bower.json'), `{${EOL}  "version": "^${NEW_VERSION}"${EOL}}${EOL}`);
   });
 });
