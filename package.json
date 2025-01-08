@@ -41,6 +41,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
+    "installed-check": "^9.3.0",
     "mock-fs": "5.4.1",
     "release-it": "^18.0.0",
     "sinon": "^19.0.2"
@@ -49,11 +50,11 @@
     "release-it": "^18.0.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": "^20.9.0 || >=22.0.0"
   },
   "release-it": {
     "hooks": {
-      "before:init": "npm test"
+      "before:init": "npm test && installed-check"
     },
     "github": {
       "tokenRef": "GITHUB_TOKEN_RELEASE_IT",
