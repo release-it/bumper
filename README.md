@@ -30,15 +30,15 @@ file(s), or use
 
 The supported file types are:
 
-| Type | Extension(s)      | Mime-type                           |
-| ---- | ----------------- | ----------------------------------- |
-| JSON | `.json`           | `application/json`                  |
-| YAML | `.yaml` or `.yml` | `text/yaml` or `application-x-yaml` |
-| TOML | `.toml`           | `text/toml` or `application/toml`   |
-| INI  | `.ini`            | `text/x-properties`                 |
-| XML  | `.xml`            | `text/xml` or `application/xml`     |
-| HTML | `.html`           | `text/html`                         |
-| TEXT | `.txt`            | `text/*`                            |
+| Type | Extension(s)      | Mime-type                                                 |
+| ---- | ----------------- | --------------------------------------------------------- |
+| JSON | `.json`           | `application/json`                                        |
+| YAML | `.yaml` or `.yml` | `text/yaml` or `application-x-yaml` or `application/yaml` |
+| TOML | `.toml`           | `text/toml` or `application/toml`                         |
+| INI  | `.ini`            | `text/x-properties`                                       |
+| XML  | `.xml`            | `text/xml` or `application/xml`                           |
+| HTML | `.html`           | `text/html` or `application/xhtml+xml`                    |
+| TEXT | `.txt`            | `text/*`                                                  |
 
 Explicitly providing the (mime) `type` takes precedence over the file extension.
 
