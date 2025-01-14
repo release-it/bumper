@@ -6,7 +6,7 @@ This plugin reads and/or writes version/manifest files.
 npm install --save-dev @release-it/bumper
 ```
 
-In [release-it](https://github.com/release-it/release-it) config:
+In [release-it][1] config:
 
 ```json
 "plugins": {
@@ -25,8 +25,7 @@ The `version` from the `in` file will take precedence over the latest Git tag (a
 it exists) in release-it to determine the latest version.
 
 Note that using `package.json` as `out` file may conflict with the npm plugin in release-it. Remove it from the `out`
-file(s), or use
-[`--npm.allowSameVersion`](https://github.com/release-it/release-it/blob/master/docs/npm.md#extra-arguments).
+file(s), or use [`--npm.allowSameVersion`][2].
 
 The supported file types are:
 
@@ -72,9 +71,11 @@ To replace all occurences of the current version with the new version in any tex
 }
 ```
 
-:warning: the operation is a search-and-replace; if the current version is not found in the file, the new version cannot be written out.
+\:warning: the operation is a search-and-replace; if the current version is not found in the file, the new version
+cannot be written out.
 
-To instead always consume the entire file, that is, the whole and only content of the file is the version number, set `consumeWholeFile: true` for the `out` option:
+To instead always consume the entire file, that is, the whole and only content of the file is the version number, set
+`consumeWholeFile: true` for the `out` option:
 
 ```json
 "plugins": {
@@ -90,7 +91,7 @@ To instead always consume the entire file, that is, the whole and only content o
 
 The version number is then written to the output file, overwriting it completely instead of a search-and-replace.
 
-:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.1` in the output file.
+\:bulb: Setting `consumeWholeFile: true` precludes the use of prefixes, such as `v1.0.1` in the output file.
 
 The `out` option can also be an array of files:
 
@@ -102,8 +103,7 @@ The `out` option can also be an array of files:
 }
 ```
 
-The `out` option is parsed with [fast-glob](https://github.com/mrmlnc/fast-glob), so glob patterns can be used to match
-files to write to:
+The `out` option is parsed with [fast-glob][3], so glob patterns can be used to match files to write to:
 
 ```json
 "plugins": {
@@ -127,8 +127,8 @@ The `path` option (default: `"version"`) can be used to change a different prope
 }
 ```
 
-> For the `xml` type, the `path` option must be in the form of a unique [css selector](https://www.w3.org/TR/selectors-4/#overview). The following example will set the
-`project > version` property to the new version in `pom.xml`:
+> For the `xml` type, the `path` option must be in the form of a unique [css selector][4]. The following example will
+> set the `project > version` property to the new version in `pom.xml`:
 
 ```json
 "plugins": {
@@ -142,8 +142,8 @@ The `path` option (default: `"version"`) can be used to change a different prope
 }
 ```
 
-> For the `html` type, the `path` option must be in the form of a unique [css selector](https://www.w3.org/TR/selectors-4/#overview). The following example will set the
-element text content with the css attribute `#version` to the new version in `foo.html`:
+For the `html` type, the `path` option must be in the form of a unique [css selector][4]. The following example will set
+the element text content with the css attribute `#version` to the new version in `foo.html`:
 
 ```json
 "plugins": {
@@ -159,9 +159,11 @@ element text content with the css attribute `#version` to the new version in `fo
 
 Multiple paths can be provided using an array.
 
-The `versionPrefix` option (default: `''`) can be used in cases where you'd like to maintain a specific prefix for your version number (for example, in `package.json` where you might want versions like `^1.0.0`). This will prepend the specified prefix to the bumped version:
+The `versionPrefix` option (default: `''`) can be used in cases where you'd like to maintain a specific prefix for your
+version number (for example, in `package.json` where you might want versions like `^1.0.0`). This will prepend the
+specified prefix to the bumped version:
 
-``` json
+```json
 "plugins": {
   "@release-it/bumper": {
     "out": {
@@ -173,7 +175,8 @@ The `versionPrefix` option (default: `''`) can be used in cases where you'd like
 }
 ```
 
-With the above configuration, if release-it determines the new version to be `1.0.0`, it'll be saved as `^1.0.0` in the targeted file.
+With the above configuration, if release-it determines the new version to be `1.0.0`, it'll be saved as `^1.0.0` in the
+targeted file.
 
 ## Command-line
 
@@ -189,3 +192,8 @@ release-it --plugins.@release-it/bumper.out=composer.json --plugins.@release-it/
 - Arguments may need to be single-quoted (`'`) such as `--'deep.key=value'` or `'--deep.key=value'`
 
 Depending on your shell or OS this may differ.
+
+[1]: https://github.com/release-it/release-it
+[2]: https://github.com/release-it/release-it/blob/master/docs/npm.md#extra-arguments
+[3]: https://github.com/mrmlnc/fast-glob
+[4]: https://www.w3.org/TR/selectors-4/#overview
