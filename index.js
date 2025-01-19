@@ -102,7 +102,7 @@ class Bumper extends Plugin {
         case 'xml':
         case 'html':
           const element = parsed(path);
-          if (!element) {
+          if (!element.length) {
             throw new Error(`Failed to find the element with the provided selector: ${path}`);
           }
           version = element.text();
@@ -179,24 +179,20 @@ class Bumper extends Plugin {
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
           case 'xml':
-            const xmlElement = parsed(path);
-            if (!xmlElement) {
-              throw new Error(`Failed to find the element with the provided selector: ${path}`);
-            }
-
-            xmlElement.text(version);
-            return writeFileSync(file, parsed.xml());
           case 'html':
-            const htmlElement = parsed(path);
-            if (!htmlElement) {
+            const element = parsed(path);
+            if (!element.length) {
               throw new Error(`Failed to find the element with the provided selector: ${path}`);
             }
 
-            // We are taking this approach as cheerio will modify the original html doc type and head formatting if we just used the parsed.html() function.
-            const previousContents = htmlElement.prop('outerHTML');
-            htmlElement.text(version);
-            const html = data.replace(previousContents.trim(), htmlElement.prop('outerHTML').trim());
-            return writeFileSync(file, html);
+            // If we just used the parsed.html() or parsed.xml() function, cheerio will modify:
+            // - html doctype
+            // - html head
+            // - encode special characters in strings too eagerly (https://github.com/cheeriojs/cheerio/issues/4045)
+            const previousContents = element.prop('outerHTML');
+            element.text(version);
+            const contents = data.replace(previousContents.trim(), element.prop('outerHTML').trim());
+            return writeFileSync(file, contents);
           default:
             const versionMatch = new RegExp(latestVersion || '', 'g');
             const write = parsed && !consumeWholeFile ? parsed.replace(versionMatch, version) : version + EOL;
