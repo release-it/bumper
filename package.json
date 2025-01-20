@@ -38,12 +38,12 @@
     "ini": "^5.0.0",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
-    "semver": "^7.3.7"
+    "semver": "^7.6.3"
   },
   "devDependencies": {
     "installed-check": "^9.3.0",
     "mock-fs": "5.4.1",
-    "release-it": "https://pkg.pr.new/release-it@14e578f",
+    "release-it": "^18.1.1",
     "sinon": "^19.0.2"
   },
   "peerDependencies": {
