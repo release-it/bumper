@@ -1,5 +1,5 @@
-import { EOL } from 'os';
-import { readFileSync } from 'fs';
+import { EOL } from 'node:os';
+import { readFileSync } from 'node:fs';
 
 export function nl(value) {
   return value.split(/\r\n|\r|\n/g).join(EOL);

@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 import glob from 'fast-glob';
 import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';

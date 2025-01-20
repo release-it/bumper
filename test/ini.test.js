@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';
@@ -93,6 +93,9 @@ describe('ini file', { concurrency: true }, () => {
     };
     const plugin = factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
-    assert.equal(readFile('./section.ini'), `[db]${EOL}user=root${EOL}${EOL}[section]${EOL}version=${NEW_VERSION}${EOL}name=fake${EOL}`);
+    assert.equal(
+      readFile('./section.ini'),
+      `[db]${EOL}user=root${EOL}${EOL}[section]${EOL}version=${NEW_VERSION}${EOL}name=fake${EOL}`
+    );
   });
 });

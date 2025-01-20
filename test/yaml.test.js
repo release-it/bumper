@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';
@@ -22,7 +22,7 @@ describe('yaml file', { concurrency: true }, () => {
   });
 
   it('should write', async () => {
-    const options = { [NAMESPACE]: { out: { file: './foo.yaml', type: 'application/yaml'} } };
+    const options = { [NAMESPACE]: { out: { file: './foo.yaml', type: 'application/yaml' } } };
     const plugin = factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.yaml'), `version: ${NEW_VERSION}${EOL}`);

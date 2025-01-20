@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';

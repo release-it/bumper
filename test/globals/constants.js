@@ -1,4 +1,4 @@
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 export const NAMESPACE = 'bumper';
 export const CURRENT_VERSION = '1.0.0';

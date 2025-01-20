@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { EOL } from 'os';
+import { EOL } from 'node:os';
 
 import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';
@@ -80,6 +80,9 @@ describe('toml file', { concurrency: true }, () => {
     };
     const plugin = factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
-    assert.equal(readFile('./cargo.toml'), `[workspace]${EOL}${EOL}[package]${EOL}name = "hello_world"${EOL}version = "${NEW_VERSION}"${EOL}authors = [ "Alice <a@example.com>", "Bob <b@example.com>" ]${EOL}${EOL}[dependencies]${EOL}time = "0.1.12"${EOL}`);
+    assert.equal(
+      readFile('./cargo.toml'),
+      `[workspace]${EOL}${EOL}[package]${EOL}name = "hello_world"${EOL}version = "${NEW_VERSION}"${EOL}authors = [ "Alice <a@example.com>", "Bob <b@example.com>" ]${EOL}${EOL}[dependencies]${EOL}time = "0.1.12"${EOL}`
+    );
   });
 });
