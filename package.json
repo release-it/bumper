@@ -47,7 +47,7 @@
     "sinon": "^19.0.2"
   },
   "peerDependencies": {
-    "release-it": "^18.0.0"
+    "release-it": ">=18.0.0"
   },
   "engines": {
     "node": "^20.9.0 || >=22.0.0"
