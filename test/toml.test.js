@@ -10,7 +10,8 @@ import { readFile } from './globals/file-utils.js';
 
 mock({
   './foo.toml': `[tool.test]${EOL}version = "${CURRENT_VERSION}"${EOL}`,
-  './cargo.toml': `[workspace]${EOL}${EOL}[package]${EOL}name = "hello_world"${EOL}version = "${CURRENT_VERSION}"${EOL}authors = [ "Alice <a@example.com>", "Bob <b@example.com>" ]${EOL}${EOL}[dependencies]${EOL}time = "0.1.12"${EOL}`
+  './cargo.toml': `[workspace]${EOL}${EOL}[package]${EOL}name = "hello_world"${EOL}version = "${CURRENT_VERSION}"${EOL}authors = [ "Alice <a@example.com>", "Bob <b@example.com>" ]${EOL}${EOL}[dependencies]${EOL}time = "0.1.12"${EOL}`,
+  './pyproject.toml': `[project]${EOL}name = "foo"${EOL}version = "${CURRENT_VERSION}"${EOL}# these are authors${EOL}authors = [{ name = "Alice", email = "a@example.com" }]${EOL}`
 });
 
 describe('toml file', { concurrency: true }, () => {
@@ -83,6 +84,20 @@ describe('toml file', { concurrency: true }, () => {
     assert.equal(
       readFile('./cargo.toml'),
       `[workspace]${EOL}${EOL}[package]${EOL}name = "hello_world"${EOL}version = "${NEW_VERSION}"${EOL}authors = [ "Alice <a@example.com>", "Bob <b@example.com>" ]${EOL}${EOL}[dependencies]${EOL}time = "0.1.12"${EOL}`
+    );
+  });
+
+  it('should read/write minimal changes', async () => {
+    const options = {
+      [NAMESPACE]: {
+        out: { file: './pyproject.toml', path: 'project.version' }
+      }
+    };
+    const plugin = factory(Bumper, { NAMESPACE, options });
+    await runTasks(plugin);
+    assert.equal(
+      readFile('./pyproject.toml'),
+      `[project]${EOL}name = "foo"${EOL}version = "${NEW_VERSION}"${EOL}# these are authors${EOL}authors = [{ name = "Alice", email = "a@example.com" }]${EOL}`
     );
   });
 });
