@@ -19,7 +19,7 @@ describe('ini file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './.foo', type: 'text/x-properties', path: 'path.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -28,7 +28,7 @@ describe('ini file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './foo.ini', path: 'path.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -37,7 +37,7 @@ describe('ini file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './section.ini', path: 'section.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -46,7 +46,7 @@ describe('ini file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.ini', type: 'text/x-properties', path: 'path.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.ini'), `path.version=${NEW_VERSION}${EOL}path.name=fake${EOL}`);
   });
@@ -55,7 +55,7 @@ describe('ini file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.ini', path: 'path.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.ini'), `path.version=${NEW_VERSION}${EOL}path.name=fake${EOL}`);
   });
@@ -67,7 +67,7 @@ describe('ini file', { concurrency: true }, () => {
         out: { file: './foo.ini', type: 'text/x-properties', path: 'path.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.ini'), `path.version=${NEW_VERSION}${EOL}path.name=fake${EOL}`);
   });
@@ -79,7 +79,7 @@ describe('ini file', { concurrency: true }, () => {
         out: { file: './foo.ini', path: 'path.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.ini'), `path.version=${NEW_VERSION}${EOL}path.name=fake${EOL}`);
   });
@@ -91,7 +91,7 @@ describe('ini file', { concurrency: true }, () => {
         out: { file: './section.ini', path: 'section.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./section.ini'),

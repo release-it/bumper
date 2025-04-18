@@ -25,7 +25,7 @@ mock({
 describe('release-it bumper', { concurrency: true }, () => {
   it('should not throw', async () => {
     const options = { [NAMESPACE]: {} };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await assert.doesNotReject(runTasks(plugin));
   });
 
@@ -36,7 +36,7 @@ describe('release-it bumper', { concurrency: true }, () => {
         out: { file: './foo.php', type: 'text/php' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.php'),
@@ -51,7 +51,7 @@ describe('release-it bumper', { concurrency: true }, () => {
         out: ['README.md', 'VERSION']
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./README.md'), `Release v${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./VERSION'), `v${NEW_VERSION}${EOL}`);
@@ -63,7 +63,7 @@ describe('release-it bumper', { concurrency: true }, () => {
         out: [{ file: './foo*.txt' }, { file: './(bower|manifest).json' }]
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.txt'), `${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./foo2.txt'), `${NEW_VERSION}${EOL}`);
@@ -73,7 +73,7 @@ describe('release-it bumper', { concurrency: true }, () => {
 
   it('should not write in dry run', async () => {
     const options = { [NAMESPACE]: { in: './dryrun.json' } };
-    const plugin = factory(Bumper, {
+    const plugin = await factory(Bumper, {
       NAMESPACE,
       options,
       global: { isDryRun: true }
@@ -91,7 +91,7 @@ describe('release-it bumper', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./invalid.toml'), `/# -*- some invalid toml -*-${EOL}version = "${NEW_VERSION}"${EOL}`);
   });

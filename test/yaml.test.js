@@ -16,14 +16,14 @@ mock({
 describe('yaml file', { concurrency: true }, () => {
   it('should return latest version', async () => {
     const options = { [NAMESPACE]: { in: './foo.yaml' } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
 
   it('should write', async () => {
     const options = { [NAMESPACE]: { out: { file: './foo.yaml', type: 'application/yaml' } } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.yaml'), `version: ${NEW_VERSION}${EOL}`);
   });
@@ -32,7 +32,7 @@ describe('yaml file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './nested.yaml', path: 'node.item.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./nested.yaml'), `node:${EOL}  item:${EOL}    version: ${NEW_VERSION}${EOL}`);
   });
@@ -44,7 +44,7 @@ describe('yaml file', { concurrency: true }, () => {
         out: { file: './nested.yaml', type: 'text/yaml', path: 'node.item.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./nested.yaml'), `node:${EOL}  item:${EOL}    version: ${NEW_VERSION}${EOL}`);
   });
@@ -56,7 +56,7 @@ describe('yaml file', { concurrency: true }, () => {
         out: { file: './nested.yaml', path: 'node.item.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./nested.yaml'), `node:${EOL}  item:${EOL}    version: ${NEW_VERSION}${EOL}`);
   });

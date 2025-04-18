@@ -21,14 +21,14 @@ mock({
 describe('html file', { concurrency: true }, () => {
   it('should return latest version', async () => {
     const options = { [NAMESPACE]: { in: { file: './foo.html', path: '#version' } } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
 
   it('should return latest version (XHTML)', async () => {
     const options = { [NAMESPACE]: { in: { file: './foo.xhtml', path: '#version' } } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -43,7 +43,7 @@ describe('html file', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.html'), updatedHTML);
   });
@@ -58,7 +58,7 @@ describe('html file', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.xhtml'), updatedXHTML);
   });
@@ -67,7 +67,7 @@ describe('html file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.html', path: '#version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.html'), updatedHTML);
   });
@@ -76,7 +76,7 @@ describe('html file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.xhtml', path: '#version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.xhtml'), updatedXHTML);
   });
@@ -88,7 +88,7 @@ describe('html file', { concurrency: true }, () => {
         out: { file: './foo.html', type: 'text/html', path: '#version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.html'), updatedHTML);
   });
@@ -100,7 +100,7 @@ describe('html file', { concurrency: true }, () => {
         out: { file: './foo.xhtml', type: 'application/xhtml+xml', path: '#version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.xhtml'), updatedXHTML);
   });
@@ -112,7 +112,7 @@ describe('html file', { concurrency: true }, () => {
         out: { file: './foo.html', path: '#version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.html'), updatedHTML);
   });
@@ -124,7 +124,7 @@ describe('html file', { concurrency: true }, () => {
         out: { file: './foo.xhtml', path: '#version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.xhtml'), updatedXHTML);
   });

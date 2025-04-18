@@ -23,14 +23,14 @@ describe('text file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './foo.txt', type: 'text/plain' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
 
   it('should return latest version without defining the type', async () => {
     const options = { [NAMESPACE]: { in: { file: './foo.txt' } } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -39,14 +39,14 @@ describe('text file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: [{ file: './VERSION-OUT', type: 'text/plain' }] }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('3.2.1');
     assert.equal(readFile('./VERSION-OUT'), `3.2.1${EOL}`);
   });
 
   it('should write default text type', async () => {
     const options = { [NAMESPACE]: { out: [{ file: './VERSION-OUT' }] } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('3.2.1');
     assert.equal(readFile('./VERSION-OUT'), `3.2.1${EOL}`);
   });
@@ -58,7 +58,7 @@ describe('text file', { concurrency: true }, () => {
         out: { file: './foo.txt', type: 'text/plain' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.txt'), `${NEW_VERSION}${EOL}`);
   });
@@ -67,7 +67,7 @@ describe('text file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './foo.txt' }, out: { file: './foo.txt' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.txt'), `${NEW_VERSION}${EOL}`);
   });
@@ -76,7 +76,7 @@ describe('text file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './foo.txt' }, out: './foo*.txt' }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.txt'), `${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./foo2.txt'), `${NEW_VERSION}${EOL}`);
@@ -99,7 +99,7 @@ describe('text file', { concurrency: true }, () => {
         ]
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./VERSION'), `v${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./VERSION-OLD'), `${NEW_VERSION}${EOL}`);
@@ -122,7 +122,7 @@ describe('text file', { concurrency: true }, () => {
         ]
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./VERSION'), `v${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./VERSION-OLD2'), `v${OLD_VERSION}${EOL}`);
@@ -144,7 +144,7 @@ describe('text file', { concurrency: true }, () => {
         ]
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./VERSION'), `v${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./VERSION-OLD2'), `v${OLD_VERSION}${EOL}`);

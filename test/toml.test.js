@@ -18,7 +18,7 @@ describe('toml file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { in: { file: './foo.toml', path: 'tool.test.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -33,7 +33,7 @@ describe('toml file', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.toml'), `[tool.test]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
@@ -42,7 +42,7 @@ describe('toml file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.toml', path: 'tool.test.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.toml'), `[tool.test]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
@@ -54,7 +54,7 @@ describe('toml file', { concurrency: true }, () => {
         out: { file: './foo.toml', type: 'application/toml', path: 'tool.test.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.toml'), `[tool.test]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
@@ -66,7 +66,7 @@ describe('toml file', { concurrency: true }, () => {
         out: { file: './foo.toml', path: 'tool.test.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./foo.toml'), `[tool.test]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
@@ -78,7 +78,7 @@ describe('toml file', { concurrency: true }, () => {
         out: { file: './cargo.toml', path: 'package.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./cargo.toml'),

@@ -16,7 +16,7 @@ mock({
 describe('xml file', { concurrency: true }, () => {
   it('should return latest version', async () => {
     const options = { [NAMESPACE]: { in: { file: './foo.xml', path: 'project > version' } } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
@@ -31,7 +31,7 @@ describe('xml file', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.xml'),
@@ -43,7 +43,7 @@ describe('xml file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './foo.xml', path: 'project > version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.xml'),
@@ -58,7 +58,7 @@ describe('xml file', { concurrency: true }, () => {
         out: { file: './foo.xml', type: 'application/xml', path: 'project > version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.xml'),
@@ -73,7 +73,7 @@ describe('xml file', { concurrency: true }, () => {
         out: { file: './foo.csproj', type: 'application/xml', path: 'Project > PropertyGroup > Version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.csproj'),
@@ -88,7 +88,7 @@ describe('xml file', { concurrency: true }, () => {
         out: { file: './foo.xml', path: 'project > version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./foo.xml'),

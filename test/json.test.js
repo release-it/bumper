@@ -19,21 +19,21 @@ mock({
 describe('json file', { concurrency: true }, () => {
   it('should return latest version', async () => {
     const options = { [NAMESPACE]: { in: './foo.json' } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     const version = await plugin.getLatestVersion();
     assert.equal(version, CURRENT_VERSION);
   });
 
   it('should write indented', async () => {
     const options = { [NAMESPACE]: { out: './manifest.json' } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('1.2.3');
     assert.equal(readFile('./manifest.json'), `{${EOL}  "version": "1.2.3"${EOL}}${EOL}`);
   });
 
   it('should write new, indented', async () => {
     const options = { [NAMESPACE]: { out: ['./null.json'] } };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('0.0.0');
     assert.equal(readFile('./null.json'), `{${EOL}  "version": "0.0.0"${EOL}}${EOL}`);
   });
@@ -42,7 +42,7 @@ describe('json file', { concurrency: true }, () => {
     const options = {
       [NAMESPACE]: { out: { file: './deep.json', path: 'deep.sub.version' } }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('1.2.3');
     assert.equal(
       readFile('./deep.json'),
@@ -59,7 +59,7 @@ describe('json file', { concurrency: true }, () => {
         }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await plugin.bump('1.2.3');
     assert.equal(
       readFile('./multi.json'),
@@ -78,7 +78,7 @@ describe('json file', { concurrency: true }, () => {
       }
     };
 
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(readFile('./bower.json'), `{${EOL}  "version": "^${NEW_VERSION}"${EOL}}${EOL}`);
   });
