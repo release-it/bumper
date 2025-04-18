@@ -172,9 +172,16 @@ class Bumper extends Plugin {
           case 'yaml':
             return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
           case 'toml':
-            const tomlString = toml.stringify(parsed);
-            // handle empty objects for sections
-            const tomlContent = tomlString.replace(/^([a-zA-Z0-9\.\-]+) \= \{ \}/g, '[$1]');
+            var tomlContent = data;
+
+            castArray(path).forEach(path => {
+              const latestPath = path.split('.').at(-1);
+              const versionMatch = new RegExp(`${latestPath}[\\W\\w]+?(${latestVersion.replaceAll('.', '\\.')})` || '');
+              tomlContent = tomlContent.replace(versionMatch, (match, group1) => {
+                return match.replace(group1, versionPrefix + version);
+              });
+            });
+
             return writeFileSync(file, tomlContent);
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
