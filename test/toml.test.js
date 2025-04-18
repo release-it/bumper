@@ -93,7 +93,7 @@ describe('toml file', { concurrency: true }, () => {
         out: { file: './pyproject.toml', path: 'project.version' }
       }
     };
-    const plugin = factory(Bumper, { NAMESPACE, options });
+    const plugin = await factory(Bumper, { NAMESPACE, options });
     await runTasks(plugin);
     assert.equal(
       readFile('./pyproject.toml'),
