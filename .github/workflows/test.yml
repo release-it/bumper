@@ -23,16 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      - uses: actions/cache@v2.1.7
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ubuntu-latest-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ubuntu-latest-node-
-
       - name: Install dependencies
         run: npm install
 
