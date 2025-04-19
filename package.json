@@ -1,6 +1,6 @@
 {
   "name": "@release-it/bumper",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "description": "Version read/write plugin for release-it",
   "type": "module",
   "exports": {
