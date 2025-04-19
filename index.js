@@ -55,14 +55,23 @@ const getFileType = (file, mimeType) => {
   return extensionsMap[ext] || 'text';
 };
 
+const detectNewline = (string = '') => {
+  const newlines = string.match(/(?:\r?\n)/g) || [];
+  if (newlines.length === 0) return '\n';
+  const crlf = newlines.filter(newline => newline === '\r\n').length;
+  const lf = newlines.length - crlf;
+  return crlf > lf ? '\r\n' : '\n';
+};
+
 const parse = async (data, type) => {
   switch (type) {
     case 'json':
       return JSON.parse(data);
     case 'yaml':
       return yaml.load(data);
-    case 'toml':
-      return toml.parse(data);
+    case 'toml': {
+      return toml.parse(data.replace(/(\r\n)/g, '\n'));
+    }
     case 'ini':
       return ini.parse(data);
     case 'xml':
@@ -159,6 +168,7 @@ class Bumper extends Plugin {
           data = type === 'text' ? latestVersion : '{}';
         }
 
+        const newline = detectNewline(data);
         const parsed = await parse(data, type);
         const indent = isString(data) ? detectIndent(data).indent || '  ' : null;
 
@@ -182,7 +192,7 @@ class Bumper extends Plugin {
               });
             });
 
-            return writeFileSync(file, tomlContent);
+            return writeFileSync(file, tomlContent.replace(/(\r?\n)/g, newline));
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
           case 'xml':
