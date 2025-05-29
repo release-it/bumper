@@ -169,7 +169,7 @@ specified prefix to the bumped version:
     "out": {
       "file": "package.json",
       "path": "version",
-      "prefix": "^"
+      "versionPrefix": "^"
     }
   }
 }
