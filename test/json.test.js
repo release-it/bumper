@@ -67,7 +67,7 @@ describe('json file', { concurrency: true }, () => {
     );
   });
 
-  it('should update version with prefix', async () => {
+  it('should update version with versionPrefix', async () => {
     const options = {
       [NAMESPACE]: {
         out: {
