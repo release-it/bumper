@@ -5,6 +5,7 @@ import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';
 import yaml from 'js-yaml';
 import toml from '@iarna/toml';
+import { patch } from '@decimalturn/toml-patch';
 import ini from 'ini';
 import semver from 'semver';
 import { Plugin } from 'release-it';
@@ -182,15 +183,8 @@ class Bumper extends Plugin {
           case 'yaml':
             return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
           case 'toml':
-            var tomlContent = data;
-
-            castArray(path).forEach(path => {
-              const latestPath = path.split('.').at(-1);
-              const versionMatch = new RegExp(`${latestPath}[\\W\\w]+?(${latestVersion.replaceAll('.', '\\.')})` || '');
-              tomlContent = tomlContent.replace(versionMatch, (match, group1) => {
-                return match.replace(group1, versionPrefix + version);
-              });
-            });
+            let tomlContent = data
+            tomlContent = patch(tomlContent, parsed)
 
             return writeFileSync(file, tomlContent.replace(/(\r?\n)/g, newline));
           case 'ini':
