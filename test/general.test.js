@@ -44,7 +44,7 @@ describe('release-it bumper', { concurrency: true }, () => {
     );
   });
 
-  it('should read one and write multiple files and respect prefix', async () => {
+  it('should read one and write multiple files and preserve existing version string prefix', async () => {
     const options = {
       [NAMESPACE]: {
         in: { file: 'VERSION', type: 'text/plain' },
