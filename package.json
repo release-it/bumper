@@ -37,7 +37,7 @@
     "detect-indent": "7.0.1",
     "fast-glob": "^3.3.3",
     "ini": "^5.0.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "lodash-es": "^4.17.21",
     "semver": "^7.7.1"
   },
