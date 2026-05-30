@@ -205,7 +205,8 @@ class Bumper extends Plugin {
             const contents = data.replace(previousContents.trim(), element.prop('outerHTML').trim());
             return writeFileSync(file, contents);
           default:
-            const versionMatch = new RegExp(latestVersion || '', 'g');
+            const escaped = (latestVersion || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const versionMatch = new RegExp(escaped, 'g');
             const write = parsed && !consumeWholeFile ? parsed.replace(versionMatch, version) : version + EOL;
             return writeFileSync(file, write);
         }

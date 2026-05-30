@@ -15,7 +15,8 @@ mock({
   './foo2.txt': `${CURRENT_VERSION}${EOL}`,
   './VERSION': `v${CURRENT_VERSION}${EOL}`,
   './VERSION-OLD': `v${OLD_VERSION}${EOL}`,
-  './VERSION-OLD2': `v${OLD_VERSION}${EOL}`
+  './VERSION-OLD2': `v${OLD_VERSION}${EOL}`,
+  './hash.txt': `project version ${CURRENT_VERSION}${EOL}commit e1a0b0c2d3e4f5061728394a5b6c7d8e9f001122${EOL}`
 });
 
 describe('text file', { concurrency: true }, () => {
@@ -148,5 +149,19 @@ describe('text file', { concurrency: true }, () => {
     await runTasks(plugin);
     assert.equal(readFile('./VERSION'), `v${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./VERSION-OLD2'), `v${OLD_VERSION}${EOL}`);
+  });
+
+  it('should not corrupt text matching the version as a regex (#36)', async () => {
+    const options = {
+      [NAMESPACE]: {
+        in: { file: './foo.txt', type: 'text/plain' },
+        out: { file: './hash.txt', type: 'text/plain' }
+      }
+    };
+    const plugin = await factory(Bumper, { NAMESPACE, options });
+    await runTasks(plugin);
+    const out = readFile('./hash.txt');
+    assert.match(out, /project version 1\.0\.1/); // version is bumped
+    assert.match(out, /commit e1a0b0c2d3e4f5061728394a5b6c7d8e9f001122/); // git hash is left intact
   });
 });
