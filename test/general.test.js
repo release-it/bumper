@@ -18,6 +18,8 @@ mock({
   './VERSION': `v${CURRENT_VERSION}${EOL}`,
   './VERSION-OLD': `v${OLD_VERSION}${EOL}`,
   './README.md': `Release v${CURRENT_VERSION}${EOL}`,
+  './package.json': JSON_DATA,
+  './pyproject.toml': `[project]${EOL}version = "${CURRENT_VERSION}"${EOL}`,
   './foo.php': `/* comments${EOL}version: v${CURRENT_VERSION} */ <? echo <p>hello world</p>; ?>${EOL}`,
   './invalid.toml': `/# -*- some invalid toml -*-${EOL}version = "${CURRENT_VERSION}"${EOL}`
 });
@@ -69,6 +71,25 @@ describe('release-it bumper', { concurrency: true }, () => {
     assert.equal(readFile('./foo2.txt'), `${NEW_VERSION}${EOL}`);
     assert.equal(readFile('./bower.json'), `{${EOL}  "version": "${NEW_VERSION}"${EOL}}${EOL}`);
     assert.equal(readFile('./manifest.json'), `{${EOL}  "version": "${NEW_VERSION}"${EOL}}${EOL}`);
+  });
+
+  it('should write a mixed array of JSON and TOML files (#46)', async () => {
+    const options = {
+      [NAMESPACE]: {
+        out: [
+          './package.json',
+          {
+            file: './pyproject.toml',
+            path: 'project.version',
+            type: 'text/toml'
+          }
+        ]
+      }
+    };
+    const plugin = await factory(Bumper, { NAMESPACE, options });
+    await runTasks(plugin);
+    assert.equal(readFile('./package.json'), `{${EOL}  "version": "${NEW_VERSION}"${EOL}}${EOL}`);
+    assert.equal(readFile('./pyproject.toml'), `[project]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
 
   it('should not write in dry run', async () => {
