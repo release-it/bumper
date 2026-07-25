@@ -3,7 +3,19 @@ import { EOL } from 'node:os';
 import glob from 'fast-glob';
 import { castArray, get, set } from 'lodash-es';
 import detectIndent from 'detect-indent';
-import yaml from 'js-yaml';
+import {
+  binaryTag,
+  CORE_SCHEMA,
+  dump as dumpYaml,
+  legacyMapTag,
+  loadAll as loadYamlDocuments,
+  mergeTag,
+  omapTag,
+  pairsTag,
+  setTag,
+  timestampTag,
+  YAMLException
+} from 'js-yaml';
 import toml from '@iarna/toml';
 import { patch } from '@decimalturn/toml-patch';
 import ini from 'ini';
@@ -13,6 +25,7 @@ import * as cheerio from 'cheerio';
 
 const noop = Promise.resolve();
 const isString = value => typeof value === 'string';
+const yamlSchema = CORE_SCHEMA.withTags(binaryTag, legacyMapTag, mergeTag, omapTag, pairsTag, setTag, timestampTag);
 
 const mimeTypesMap = {
   'application/json': 'json',
@@ -68,8 +81,13 @@ const parse = async (data, type) => {
   switch (type) {
     case 'json':
       return JSON.parse(data);
-    case 'yaml':
-      return yaml.load(data);
+    case 'yaml': {
+      const documents = loadYamlDocuments(data, { schema: yamlSchema });
+      if (documents.length > 1) {
+        throw new YAMLException('expected a single document in the stream, but found more');
+      }
+      return documents[0];
+    }
     case 'toml': {
       return toml.parse(data.replace(/(\r\n)/g, '\n'));
     }
@@ -181,12 +199,9 @@ class Bumper extends Plugin {
           case 'json':
             return writeFileSync(file, JSON.stringify(parsed, null, indent) + '\n');
           case 'yaml':
-            return writeFileSync(file, yaml.dump(parsed, { indent: indent.length }));
+            return writeFileSync(file, dumpYaml(parsed, { indent: indent.length }));
           case 'toml':
-            let tomlContent = data
-            tomlContent = patch(tomlContent, parsed)
-
-            return writeFileSync(file, tomlContent.replace(/(\r?\n)/g, newline));
+            return writeFileSync(file, patch(data, parsed).replace(/(\r?\n)/g, newline));
           case 'ini':
             return writeFileSync(file, ini.encode(parsed));
           case 'xml':
