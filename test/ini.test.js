@@ -2,13 +2,12 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { EOL } from 'node:os';
 
-import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';
 import Bumper from '../index.js';
 import { NAMESPACE, CURRENT_VERSION, NEW_VERSION } from './globals/constants.js';
-import { readFile } from './globals/file-utils.js';
+import { readFile, useTempFiles } from './globals/file-utils.js';
 
-mock({
+useTempFiles({
   './.foo': `path.version=${CURRENT_VERSION}${EOL}path.name=fake${EOL}`,
   './foo.ini': `path.version=${CURRENT_VERSION}${EOL}path.name=fake${EOL}`,
   './section.ini': `[db]${EOL}user=root${EOL}${EOL}[section]${EOL}version=${CURRENT_VERSION}${EOL}name=fake${EOL}`

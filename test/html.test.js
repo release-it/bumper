@@ -2,18 +2,17 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { EOL } from 'node:os';
 
-import mock from 'mock-fs';
 import { factory, runTasks } from 'release-it/test/util/index.js';
 import Bumper from '../index.js';
 import { NAMESPACE, CURRENT_VERSION, NEW_VERSION } from './globals/constants.js';
-import { readFile } from './globals/file-utils.js';
+import { readFile, useTempFiles } from './globals/file-utils.js';
 
 const html = `<!DOCTYPE html>${EOL}<html lang="en">${EOL}  <head></head>${EOL}  <body>${EOL}    <div>${EOL}        <div id="version">${CURRENT_VERSION}</div>${EOL}    </div>${EOL}  </body>${EOL}</html>${EOL}`;
 const updatedHTML = `<!DOCTYPE html>${EOL}<html lang="en">${EOL}  <head></head>${EOL}  <body>${EOL}    <div>${EOL}        <div id="version">${NEW_VERSION}</div>${EOL}    </div>${EOL}  </body>${EOL}</html>${EOL}`;
 const xhtml = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"${EOL}"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">${EOL}<html xmlns="http://www.w3.org/1999/xhtml">${EOL}<head>${EOL}  <title>Title of document</title>${EOL}</head>${EOL}<body>${EOL}  <div id="version">${CURRENT_VERSION}</div>${EOL}</body>${EOL}</html>`;
 const updatedXHTML = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"${EOL}"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">${EOL}<html xmlns="http://www.w3.org/1999/xhtml">${EOL}<head>${EOL}  <title>Title of document</title>${EOL}</head>${EOL}<body>${EOL}  <div id="version">${NEW_VERSION}</div>${EOL}</body>${EOL}</html>`;
 
-mock({
+useTempFiles({
   './foo.html': html,
   './foo.xhtml': xhtml
 });
