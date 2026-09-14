@@ -103,7 +103,7 @@ describe('toml file', { concurrency: true }, () => {
     assert.equal(contents, `[tool.test]${EOL}version = "${NEW_VERSION}"${EOL}`);
   });
 
-  it('should read/write without formatting', async () => {
+  it('should preserve comments and normalize spacing after empty sections', async () => {
     const namespaceOptions = {
       in: { file: './with_comments_and_formatting.toml', path: 'tool.test.version' },
       out: { file: './with_comments_and_formatting.toml', path: 'tool.test.version' }
@@ -111,7 +111,7 @@ describe('toml file', { concurrency: true }, () => {
     const contents = await readFilePostBumperTasks(namespaceOptions);
     assert.equal(
       contents,
-      `# Lead with some comments${EOL}${EOL}[workspace]${EOL}${EOL}${EOL}[tool.test]${EOL}name    = "hello_world"${EOL}version = "${NEW_VERSION}"${EOL}`
+      `# Lead with some comments${EOL}${EOL}[workspace]${EOL}${EOL}[tool.test]${EOL}name    = "hello_world"${EOL}version = "${NEW_VERSION}"${EOL}`
     );
   });
 
