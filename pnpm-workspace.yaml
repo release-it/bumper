@@ -1,0 +1,4 @@
+overrides:
+  '@npmcli/map-workspaces': ^6.0.0
+minimumReleaseAgeExclude:
+  - release-it
