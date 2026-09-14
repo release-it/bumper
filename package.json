@@ -31,20 +31,20 @@
   },
   "author": "Lars Kappert <lars@webpro.nl>",
   "dependencies": {
-    "@decimalturn/toml-patch": "^2.1.0",
+    "@decimalturn/toml-patch": "^3.1.0",
     "@iarna/toml": "^3.0.0",
     "cheerio": "^1.2.0",
     "detect-indent": "7.0.2",
     "fast-glob": "^3.3.3",
-    "ini": "^6.0.0",
-    "js-yaml": "^5.2.2",
+    "ini": "^7.0.0",
+    "js-yaml": "^5.4.2",
     "lodash-es": "^4.18.1",
-    "verkit": "^0.3.2"
+    "verkit": "^0.4.0"
   },
   "devDependencies": {
-    "installed-check": "^10.0.1",
+    "installed-check": "^11.0.0",
     "mock-fs": "5.5.0",
-    "release-it": "^21.0.1",
+    "release-it": "^21.0.3",
     "sinon": "^22.1.0"
   },
   "peerDependencies": {
