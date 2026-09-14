@@ -19,7 +19,7 @@ import {
 import toml from '@iarna/toml';
 import { patch } from '@decimalturn/toml-patch';
 import ini from 'ini';
-import semver from 'semver';
+import { normalize } from 'verkit';
 import { Plugin } from 'release-it';
 import * as cheerio from 'cheerio';
 
@@ -139,8 +139,7 @@ class Bumper extends Plugin {
           version = parsed.trim();
       }
 
-      const parsedVersion = semver.parse(version);
-      return parsedVersion ? parsedVersion.toString() : null;
+      return normalize(version);
     }
     return null;
   }
