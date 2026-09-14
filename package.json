@@ -58,6 +58,9 @@
     "hooks": {
       "before:init": "pnpm test && installed-check --no-workspaces"
     },
+    "npm": {
+      "stage": true
+    },
     "github": {
       "tokenRef": "GITHUB_TOKEN_RELEASE_IT",
       "release": true,
